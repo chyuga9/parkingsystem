@@ -25,12 +25,13 @@ public class TicketDAO {
             con = dataBaseConfig.getConnection();
             PreparedStatement ps = con.prepareStatement(DBConstants.SAVE_TICKET);
             //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
+            // Enlever des commentaires la ligne du dessous et décalage d'un numero autres lignes
             //ps.setInt(1,ticket.getId());
-            ps.setInt(1,ticket.getParkingSpot().getId());
-            ps.setString(2, ticket.getVehicleRegNumber());
-            ps.setDouble(3, ticket.getPrice());
-            ps.setTimestamp(4, new Timestamp(ticket.getInTime().getTime()));
-            ps.setTimestamp(5, (ticket.getOutTime() == null)?null: (new Timestamp(ticket.getOutTime().getTime())) );
+            ps.setInt(2,ticket.getParkingSpot().getId());
+            ps.setString(3, ticket.getVehicleRegNumber());
+            ps.setDouble(4, ticket.getPrice());
+            ps.setTimestamp(5, Timestamp.from(ticket.getInTime()));
+            ps.setTimestamp(6, (Timestamp.from(ticket.getOutTime()) == null)?null: (Timestamp.from(ticket.getOutTime())) );
             return ps.execute();
         }catch (Exception ex){
             logger.error("Error fetching next available slot",ex);
@@ -56,8 +57,8 @@ public class TicketDAO {
                 ticket.setId(rs.getInt(2));
                 ticket.setVehicleRegNumber(vehicleRegNumber);
                 ticket.setPrice(rs.getDouble(3));
-                ticket.setInTime(rs.getTimestamp(4));
-                ticket.setOutTime(rs.getTimestamp(5));
+                ticket.setInTime(rs.getTimestamp(4).toInstant());
+                ticket.setOutTime(rs.getTimestamp(5).toInstant());
             }
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);
@@ -75,7 +76,7 @@ public class TicketDAO {
             con = dataBaseConfig.getConnection();
             PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_TICKET);
             ps.setDouble(1, ticket.getPrice());
-            ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTime()));
+            ps.setTimestamp(2, Timestamp.from(ticket.getOutTime()));
             ps.setInt(3,ticket.getId());
             ps.execute();
             return true;
