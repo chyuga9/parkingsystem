@@ -83,12 +83,8 @@ public class FareCalculatorServiceTest {
     @Test
     public void calculateFareBikeWithLessThanOneHourParkingTime(){
         Instant inTime = Instant.now().minusSeconds(45*60);
-        System.out.println(inTime);
         Instant outTime = Instant.now();
-        System.out.println(outTime);
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
-        long result = inTime.until(outTime,ChronoUnit.HOURS);
-        System.out.println(result);
         ticket.setInTime(inTime);
         ticket.setOutTime(outTime);
         ticket.setParkingSpot(parkingSpot);
@@ -101,7 +97,6 @@ public class FareCalculatorServiceTest {
     	Instant inTime = Instant.now().minusSeconds(45*60);
     	Instant outTime = Instant.now();
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
-
         ticket.setInTime(inTime);
         ticket.setOutTime(outTime);
         ticket.setParkingSpot(parkingSpot);

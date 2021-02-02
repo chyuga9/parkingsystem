@@ -16,8 +16,9 @@ public class FareCalculatorService {
         Instant inHour = ticket.getInTime();
         Instant outHour = ticket.getOutTime();
 
-        //TODO: Some tests are failing here. Need to check if this logic is correct
-        long duration = inHour.until(outHour,ChronoUnit.HOURS);
+        
+        double duration = inHour.until(outHour,ChronoUnit.MINUTES);
+        duration /=60;
 
         switch (ticket.getParkingSpot().getParkingType()){
             case CAR: {
