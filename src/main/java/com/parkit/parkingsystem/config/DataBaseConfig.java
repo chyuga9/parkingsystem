@@ -1,4 +1,4 @@
-package com.parkit.parkingsystem.config;
+	package com.parkit.parkingsystem.config;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,11 +10,17 @@ public class DataBaseConfig {
     private static final Logger logger = LogManager.getLogger("DataBaseConfig");
 
     public Connection getConnection() throws ClassNotFoundException, SQLException {
-        logger.info("Create DB connection");
+    	Connection con = null;
+    	if(con == null) {
+    		try{logger.info("Create DB connection");
         Class.forName("com.mysql.cj.jdbc.Driver");
-        return DriverManager.getConnection(
+        con = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/prod","root","rootroot");
+    }catch (SQLException e){
+    	logger.error("Error while opening connection",e);
     }
+    }
+		return con;}
 
     public void closeConnection(Connection con){
         if(con!=null){
