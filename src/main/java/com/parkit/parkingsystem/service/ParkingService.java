@@ -1,5 +1,7 @@
 package com.parkit.parkingsystem.service;
 
+import com.parkit.parkingsystem.config.DataBaseConfig;
+import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
@@ -9,6 +11,9 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.time.Instant;
 import java.util.Date;
 
@@ -21,6 +26,7 @@ public class ParkingService {
     private InputReaderUtil inputReaderUtil;
     private ParkingSpotDAO parkingSpotDAO;
     private  TicketDAO ticketDAO;
+    public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
     public ParkingService(InputReaderUtil inputReaderUtil, ParkingSpotDAO parkingSpotDAO, TicketDAO ticketDAO){
         this.inputReaderUtil = inputReaderUtil;
@@ -33,11 +39,25 @@ public class ParkingService {
             ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
             if(parkingSpot !=null && parkingSpot.getId() > 0){
                 String vehicleRegNumber = getVehichleRegNumber();
+                // Décommenter le commentaire suivant que j'ai mis quandj'aurias trouvé comment checker la BDD
+                
                 parkingSpot.setAvailable(false);
                 parkingSpotDAO.updateParking(parkingSpot);//allot this parking space and mark it's availability as false
 
                 Instant inTime = Instant.now();
                 Ticket ticket = new Ticket();
+                Connection con = null;
+                try {
+                    con = dataBaseConfig.getConnection();
+                    PreparedStatement ps = con.prepareStatement(DBConstants.RECURRING_USER);
+                    ps.setString(1,vehicleRegNumber);
+                    ResultSet rs = ps.executeQuery();
+                    if(rs.next()){
+                    	System.out.println("Welcome back! As a recurring user of our parking lot, you'll benefit from a 5% discount.");
+                    }
+                    }catch (Exception ex){
+                        logger.error("Error fetching next available slot",ex);
+                    }
                 //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
                 //ticket.setId(ticketID);
                 ticket.setParkingSpot(parkingSpot);
