@@ -82,14 +82,14 @@ public class FareCalculatorServiceTest {
 
     @Test
     public void calculateFareBikeWithLessThanOneHourParkingTime(){
-        Instant inTime = Instant.now().minusSeconds(45*60);
+        Instant inTime = Instant.now().minusSeconds(6*60);
         Instant outTime = Instant.now();
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
         ticket.setInTime(inTime);
         ticket.setOutTime(outTime);
         ticket.setParkingSpot(parkingSpot);
         fareCalculatorService.calculateFare(ticket);
-        assertEquals((0.75 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
+        assertEquals((0.1 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
     }
 
     @Test
@@ -116,5 +116,27 @@ public class FareCalculatorServiceTest {
         fareCalculatorService.calculateFare(ticket);
         assertEquals( (24 * Fare.CAR_RATE_PER_HOUR) , ticket.getPrice());
     }
-
+    @Test
+    public void calculateFareCarWithLessThanHalfHour() {
+    	Instant inTime = Instant.now().minusSeconds(3*60);
+    	Instant outTime = Instant.now();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        fareCalculatorService.calculateFare(ticket);
+        assertEquals((0 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
+    }
+    
+    @Test
+    public void calculateFareWithDiscountForRecurrentUserForAnHour() {
+    	Instant inTime = Instant.now().minusSeconds(60*60);
+    	Instant outTime = Instant.now();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        fareCalculatorService.calculateFare(ticket);
+        assertEquals((Fare.CAR_RATE_PER_HOUR * 0.95), ticket.getPrice());
+    }
 }
