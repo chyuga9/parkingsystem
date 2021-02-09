@@ -15,7 +15,8 @@ public class DataBaseConfig {
     		try{logger.info("Create DB connection");
         Class.forName("com.mysql.cj.jdbc.Driver");
         con = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/prod","root","rootroot");
+                "jdbc:mysql://localhost:3306/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","");
+        System.out.println("Connexion à la database réussie");
     }catch (SQLException e){
     	logger.error("Error while opening connection",e);
     }
@@ -27,6 +28,7 @@ public class DataBaseConfig {
             try {
                 con.close();
                 logger.info("Closing DB connection");
+                System.out.println("Connexion fermée");
             } catch (SQLException e) {
                 logger.error("Error while closing connection",e);
             }
