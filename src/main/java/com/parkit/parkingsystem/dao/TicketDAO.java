@@ -27,11 +27,13 @@ public class TicketDAO {
             //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
             // Enlever des commentaires la ligne du dessous et décalage d'un numero autres lignes
             //ps.setInt(1,ticket.getId());
-            ps.setInt(2,ticket.getParkingSpot().getId());
-            ps.setString(3, ticket.getVehicleRegNumber());
-            ps.setDouble(4, ticket.getPrice());
-            ps.setTimestamp(5, Timestamp.from(ticket.getInTime()));
-            ps.setTimestamp(6, (Timestamp.from(ticket.getOutTime()) == null)?null: (Timestamp.from(ticket.getOutTime())) );
+            ps.setInt(1,ticket.getParkingSpot().getId());
+            ps.setString(2, ticket.getVehicleRegNumber());
+            ps.setDouble(3, ticket.getPrice());
+            //ps.setDouble(4, 15);
+            ps.setTimestamp(4, Timestamp.from(ticket.getInTime()));
+            //ps.setTimestamp(5, (Timestamp.from(ticket.getOutTime()) == null)?null: (Timestamp.from(ticket.getOutTime())) );
+            ps.setNull(5, 0);
             return ps.execute();
         }catch (Exception ex){
             logger.error("Error fetching next available slot",ex);
