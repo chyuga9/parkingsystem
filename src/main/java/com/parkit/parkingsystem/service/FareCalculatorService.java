@@ -1,5 +1,7 @@
 package com.parkit.parkingsystem.service;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
@@ -8,11 +10,13 @@ import com.parkit.parkingsystem.model.Ticket;
 
 public class FareCalculatorService {
 
+		public static NumberFormat df = new DecimalFormat("#.##");
+		
+		
     public void calculateFare(Ticket ticket){
         if( (ticket.getOutTime() == null) || (ticket.getOutTime().isBefore(ticket.getInTime())) ){
             throw new IllegalArgumentException("Out time provided is incorrect:"+ticket.getOutTime().toString());
         }
-
         Instant inHour = ticket.getInTime();
         Instant outHour = ticket.getOutTime();
 
@@ -25,15 +29,30 @@ public class FareCalculatorService {
         }else {
 	        switch (ticket.getParkingSpot().getParkingType()){
 	            case CAR: {
-	                ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
-	                break;
+	                //ticket.setPrice(Double.valueOf(df.format(duration * Fare.CAR_RATE_PER_HOUR)));
+	            	//ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
+	            	// Using Math.round(fare * 100) / 100 to format number as "#.##"
+	            	if(ticket.isRecurringUser()) {
+	            		ticket.setPrice(Math.round(duration * Fare.CAR_RATE_PER_HOUR * 0.95 * 100.0)/100.0);
+	            	}else {
+	            		ticket.setPrice(Math.round(duration * Fare.CAR_RATE_PER_HOUR * 100.0)/100.0);
+	            	}
+	            	break;
 	            }
 	            case BIKE: {
-	                ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
-	                break;
+	            	//ticket.setPrice(Double.valueOf(df.format(duration * Fare.BIKE_RATE_PER_HOUR)));
+	                //ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
+	            	// Using Math.round(fare * 100) / 100 to format number as "#.##"
+	            	if(ticket.isRecurringUser()) {
+	            		ticket.setPrice(Math.round(duration * Fare.BIKE_RATE_PER_HOUR * 0.95 * 100.0)/100.0);
+	            	}else {
+	            		ticket.setPrice(Math.round(duration * Fare.BIKE_RATE_PER_HOUR * 100.0)/100.0);
+	            	}
+	            	break;
 	            }
 	            default: throw new IllegalArgumentException("Unkown Parking Type");
 	        }
+	        
         }
     }
 }
