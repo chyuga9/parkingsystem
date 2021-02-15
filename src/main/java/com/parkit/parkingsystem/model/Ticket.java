@@ -8,11 +8,20 @@ public class Ticket {
     private int id;
     private ParkingSpot parkingSpot;
     private String vehicleRegNumber;
-    private double price;
+    private double price = 0;
     private Instant inTime;
     private Instant outTime;
+    private boolean recurringUser = false;
 
-    public int getId() {
+    public boolean isRecurringUser() {
+		return recurringUser;
+	}
+
+	public void setRecurringUser(boolean recurringUser) {
+		this.recurringUser = recurringUser;
+	}
+
+	public int getId() {
         return id;
     }
 
