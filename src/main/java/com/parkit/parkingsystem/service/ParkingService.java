@@ -47,6 +47,7 @@ public class ParkingService {
                 Instant inTime = Instant.now();
                 Ticket ticket = new Ticket();
                 Connection con = null;
+                // Seeking if it's a recurring user
                 try {
                     con = dataBaseConfig.getConnection();
                     PreparedStatement ps = con.prepareStatement(DBConstants.RECURRING_USER);
@@ -56,7 +57,7 @@ public class ParkingService {
                     	System.out.println("Welcome back! As a recurring user of our parking lot, you'll benefit from a 5% discount.");
                     }
                     }catch (Exception ex){
-                        logger.error("Error fetching next available slot",ex);
+                        logger.error("Error seeking if it's a recurring user",ex);
                     }
                 //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
                 //ticket.setId(ticketID);
