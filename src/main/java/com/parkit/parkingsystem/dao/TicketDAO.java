@@ -35,7 +35,7 @@ public class TicketDAO {
             //ps.setTimestamp(5, (Timestamp.from(ticket.getOutTime()) == null)?null: (Timestamp.from(ticket.getOutTime())) );
             ps.setNull(5, 0);
             return ps.execute();
-        }catch (Exception ex){
+            }catch (Exception ex){
             logger.error("Error fetching next available slot",ex);
         }finally {
             dataBaseConfig.closeConnection(con);
@@ -49,7 +49,7 @@ public class TicketDAO {
         try {
             con = dataBaseConfig.getConnection();
             PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET);
-            //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
+            //PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
             ps.setString(1,vehicleRegNumber);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
@@ -60,7 +60,7 @@ public class TicketDAO {
                 ticket.setVehicleRegNumber(vehicleRegNumber);
                 ticket.setPrice(rs.getDouble(3));
                 ticket.setInTime(rs.getTimestamp(4).toInstant());
-                ticket.setOutTime(rs.getTimestamp(5).toInstant());
+                //ticket.setOutTime(rs.getTimestamp(5).toInstant());
             }
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);
@@ -77,7 +77,15 @@ public class TicketDAO {
         try {
             con = dataBaseConfig.getConnection();
             PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_TICKET);
+            //PreparedStatement ps1 = con.prepareStatement(DBConstants.RECURRING_USER);
+            // chercher la plaque dans la database
+            //ps1.setString(1,ticket.getVehicleRegNumber());
+            //ResultSet rs = ps1.executeQuery();
+            
+            // si la plaque est dans la database on affiche un message à la console / on attribuera les 5% à l'update ou sortie
+            
             ps.setDouble(1, ticket.getPrice());
+            //if(rs.next()) {ps.setDouble(1, ticket.getPrice()*0.95);}
             ps.setTimestamp(2, Timestamp.from(ticket.getOutTime()));
             ps.setInt(3,ticket.getId());
             ps.execute();
@@ -89,4 +97,21 @@ public class TicketDAO {
         }
         return false;
     }
+    
+    public boolean isRecurringUser(Ticket ticket) {
+    Connection con = null;
+    // Seeking if it's a recurring user
+    try {
+        con = dataBaseConfig.getConnection();
+        PreparedStatement ps = con.prepareStatement(DBConstants.RECURRING_USER);
+        ps.setString(1,ticket.getVehicleRegNumber());
+        ResultSet rs = ps.executeQuery();
+        if(rs.next()){
+        	ticket.setRecurringUser(true);
+        }
+        }catch (Exception ex){
+            logger.error("Error seeking if it's a recurring user",ex);
+        }
+    return ticket.isRecurringUser();
+}
 }
