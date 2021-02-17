@@ -43,8 +43,8 @@ public class ParkingServiceTest {
             ticket.setInTime(Instant.now().minusSeconds(60*60));
             ticket.setParkingSpot(parkingSpot);
             ticket.setVehicleRegNumber("ABCDEF");
-            when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
-            when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
+            //when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+            //when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
 
             when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
 
@@ -64,14 +64,11 @@ public class ParkingServiceTest {
     @Test
     public void processIncomingCarTest(){
     	when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(1);
+    	when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
     	parkingService.processIncomingVehicle();
-        //verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+    	verify(parkingSpotDAO, Mockito.times(1)).getNextAvailableSlot(ParkingType.CAR);
+    	verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+        verify(ticketDAO,Mockito.times(1)).saveTicket(any(Ticket.class));
     	}
     
-    @Disabled
-    @Test
-    public void processExitingVehicleTest1(){
-        parkingService.processExitingVehicle();
-        verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
-    }
 }
