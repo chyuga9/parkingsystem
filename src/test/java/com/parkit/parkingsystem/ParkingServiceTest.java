@@ -78,4 +78,14 @@ public class ParkingServiceTest {
         verify(ticketDAO,Mockito.times(1)).saveTicket(any(Ticket.class));
     	}
     
+    @Test
+    public void processIncomingBikeTest(){
+    	when(inputReaderUtil.readSelection()).thenReturn(2);
+    	when(parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE)).thenReturn(4);
+    	when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
+    	parkingService.processIncomingVehicle();
+    	verify(parkingSpotDAO, Mockito.times(1)).getNextAvailableSlot(ParkingType.BIKE);
+    	verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+        verify(ticketDAO,Mockito.times(1)).saveTicket(any(Ticket.class));
+    	}
 }
