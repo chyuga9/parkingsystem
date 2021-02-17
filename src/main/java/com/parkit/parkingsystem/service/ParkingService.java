@@ -39,11 +39,8 @@ public class ParkingService {
             ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
             if(parkingSpot !=null && parkingSpot.getId() > 0){
                 String vehicleRegNumber = getVehichleRegNumber();
-                // Décommenter le commentaire suivant que j'ai mis quandj'aurias trouvé comment checker la BDD
-                
                 parkingSpot.setAvailable(false);
                 parkingSpotDAO.updateParking(parkingSpot);//allot this parking space and mark it's availability as false
-
                 Instant inTime = Instant.now();
                 Ticket ticket = new Ticket();
                 Connection con = null;
@@ -84,11 +81,15 @@ public class ParkingService {
     public ParkingSpot getNextParkingNumberIfAvailable(){
         int parkingNumber=0;
         ParkingSpot parkingSpot = null;
+        //ParkingSpot parkingSpot = new ParkingSpot(0,ParkingType.CAR,false);
         try{
             ParkingType parkingType = getVehichleType();
             parkingNumber = parkingSpotDAO.getNextAvailableSlot(parkingType);
             if(parkingNumber > 0){
-                parkingSpot = new ParkingSpot(parkingNumber,parkingType, true);
+            	parkingSpot = new ParkingSpot(parkingNumber,parkingType,true);
+				parkingSpot.setId(parkingNumber);
+				parkingSpot.setParkingType(parkingType);
+				parkingSpot.setAvailable(true);
             }else{
                 throw new Exception("Error fetching parking number from DB. Parking slots might be full");
             }
