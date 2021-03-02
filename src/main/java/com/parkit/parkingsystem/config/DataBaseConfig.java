@@ -15,7 +15,7 @@ public class DataBaseConfig {
     		try{logger.info("Create DB connection");
         Class.forName("com.mysql.cj.jdbc.Driver");
         con = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","");
+                "jdbc:mysql://localhost:3306/prod?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","");
         System.out.println("Connexion à la database réussie");
     }catch (SQLException e){
     	logger.error("Error while opening connection",e);

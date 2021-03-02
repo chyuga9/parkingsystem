@@ -32,6 +32,7 @@ public class FareCalculatorService {
 	                //ticket.setPrice(Double.valueOf(df.format(duration * Fare.CAR_RATE_PER_HOUR)));
 	            	//ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
 	            	// Using Math.round(fare * 100) / 100 to format number as "#.##"
+	            	// If it's recurring user, there is 5% discount
 	            	if(ticket.isRecurringUser()) {
 	            		ticket.setPrice(Math.round(duration * Fare.CAR_RATE_PER_HOUR * 0.95 * 100.0)/100.0);
 	            	}else {
@@ -43,6 +44,7 @@ public class FareCalculatorService {
 	            	//ticket.setPrice(Double.valueOf(df.format(duration * Fare.BIKE_RATE_PER_HOUR)));
 	                //ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
 	            	// Using Math.round(fare * 100) / 100 to format number as "#.##"
+	            	// If it's recurring user, there is 5% discount
 	            	if(ticket.isRecurringUser()) {
 	            		ticket.setPrice(Math.round(duration * Fare.BIKE_RATE_PER_HOUR * 0.95 * 100.0)/100.0);
 	            	}else {

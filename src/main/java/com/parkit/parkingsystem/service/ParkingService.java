@@ -42,27 +42,22 @@ public class ParkingService {
                 parkingSpot.setAvailable(false);
                 parkingSpotDAO.updateParking(parkingSpot);//allot this parking space and mark it's availability as false
                 Instant inTime = Instant.now();
-                Ticket ticket = new Ticket();
+                // Creer une instance avec les parametres et enlever tous les sets en bas
+                Ticket ticket = new Ticket(parkingSpot,vehicleRegNumber,Instant.now());
                 Connection con = null;
                 // Seeking if it's a recurring user
-                try {
-                    con = dataBaseConfig.getConnection();
-                    PreparedStatement ps = con.prepareStatement(DBConstants.RECURRING_USER);
-                    ps.setString(1,vehicleRegNumber);
-                    ResultSet rs = ps.executeQuery();
-                    if(rs.next()){
+                if(ticketDAO.isRecurringUser(ticket)) {
                     	System.out.println("Welcome back! As a recurring user of our parking lot, you'll benefit from a 5% discount.");
                     }
-                    }catch (Exception ex){
-                        logger.error("Error seeking if it's a recurring user",ex);
-                    }
+                 
                 //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
-                //ticket.setId(ticketID);
+                /*ticket.setId(ticketID);
                 ticket.setParkingSpot(parkingSpot);
                 ticket.setVehicleRegNumber(vehicleRegNumber);
                 ticket.setPrice(0);
                 ticket.setInTime(inTime);
                 ticket.setOutTime(null);
+                */
                 ticketDAO.saveTicket(ticket);
                 System.out.println("Generated Ticket and saved in DB");
                 System.out.println("Please park your vehicle in spot number:"+parkingSpot.getId());
@@ -101,7 +96,8 @@ public class ParkingService {
         return parkingSpot;
     }
 
-    private ParkingType getVehichleType(){
+    //private 
+    public ParkingType getVehichleType(){
         System.out.println("Please select vehicle type from menu");
         System.out.println("1 CAR");
         System.out.println("2 BIKE");

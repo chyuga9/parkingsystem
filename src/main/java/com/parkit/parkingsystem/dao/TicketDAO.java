@@ -61,31 +61,28 @@ public class TicketDAO {
                 ticket.setPrice(rs.getDouble(3));
                 ticket.setInTime(rs.getTimestamp(4).toInstant());
                 //ticket.setOutTime(rs.getTimestamp(5).toInstant());
+            }else {
+            	logger.error("The vehicule with the number indicated wasn't found. Please check your vehicule number and try again.");
             }
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);
+            dataBaseConfig.closeConnection(con);
+            
         }catch (Exception ex){
             logger.error("Error fetching next available slot",ex);
-        }finally {
-            dataBaseConfig.closeConnection(con);
-            return ticket;
-        }
+            ex.printStackTrace();
     }
+        return ticket;
+    }
+    
+    
 
     public boolean updateTicket(Ticket ticket) {
         Connection con = null;
         try {
             con = dataBaseConfig.getConnection();
             PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_TICKET);
-            //PreparedStatement ps1 = con.prepareStatement(DBConstants.RECURRING_USER);
-            // chercher la plaque dans la database
-            //ps1.setString(1,ticket.getVehicleRegNumber());
-            //ResultSet rs = ps1.executeQuery();
-            
-            // si la plaque est dans la database on affiche un message à la console / on attribuera les 5% à l'update ou sortie
-            
             ps.setDouble(1, ticket.getPrice());
-            //if(rs.next()) {ps.setDouble(1, ticket.getPrice()*0.95);}
             ps.setTimestamp(2, Timestamp.from(ticket.getOutTime()));
             ps.setInt(3,ticket.getId());
             ps.execute();
@@ -100,7 +97,6 @@ public class TicketDAO {
     
     public boolean isRecurringUser(Ticket ticket) {
     Connection con = null;
-    // Seeking if it's a recurring user
     try {
         con = dataBaseConfig.getConnection();
         PreparedStatement ps = con.prepareStatement(DBConstants.RECURRING_USER);

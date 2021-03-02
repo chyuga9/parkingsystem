@@ -12,8 +12,31 @@ public class Ticket {
     private Instant inTime;
     private Instant outTime;
     private boolean recurringUser = false;
+    
 
-    public boolean isRecurringUser() {
+    public Ticket(ParkingSpot parkingSpot, String vehicleRegNumber, double price, Instant inTime, Instant outTime,
+			boolean recurringUser) {
+		super();
+		this.parkingSpot = parkingSpot;
+		this.vehicleRegNumber = vehicleRegNumber;
+		this.price = price;
+		this.inTime = inTime;
+		this.outTime = outTime;
+		this.recurringUser = recurringUser;
+	}
+
+	public Ticket(ParkingSpot parkingSpot, String vehicleRegNumber, Instant inTime) {
+		super();
+		this.parkingSpot = parkingSpot;
+		this.vehicleRegNumber = vehicleRegNumber;
+		this.inTime = inTime;
+	}
+
+	public Ticket() {
+		
+	}
+
+	public boolean isRecurringUser() {
 		return recurringUser;
 	}
 

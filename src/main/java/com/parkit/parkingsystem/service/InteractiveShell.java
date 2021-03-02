@@ -9,9 +9,14 @@ import org.apache.logging.log4j.Logger;
 public class InteractiveShell {
 
     private static final Logger logger = LogManager.getLogger("InteractiveShell");
+    //static InputReaderUtil inputReaderUtil = new InputReaderUtil();
+    //static ParkingSpotDAO parkingSpotDAO = new ParkingSpotDAO();
+    //static TicketDAO ticketDAO = new TicketDAO();
+    //static ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+
 
     public static void loadInterface(){
-        logger.info("App initialized!!!");
+        logger.info("App initialized!!!"); 
         System.out.println("Welcome to Parking System!");
 
         boolean continueApp = true;
@@ -42,7 +47,7 @@ public class InteractiveShell {
         }
     }
 
-    private static void loadMenu(){
+    public static void loadMenu(){
         System.out.println("Please select an option. Simply enter the number to choose an action");
         System.out.println("1 New Vehicle Entering - Allocate Parking Space");
         System.out.println("2 Vehicle Exiting - Generate Ticket Price");
