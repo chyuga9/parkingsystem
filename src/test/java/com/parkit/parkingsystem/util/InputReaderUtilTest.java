@@ -3,13 +3,14 @@ package com.parkit.parkingsystem.util;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-import java.io.InputStream;
 import java.util.Scanner;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.internal.configuration.injection.scanner.MockScanner;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -21,7 +22,10 @@ public class InputReaderUtilTest {
 	@Disabled
 	@Test
 	public void readSelectionTest() {
-		System.out.print(1);
+		//InputStream input = new InputStream();
+		Scanner scan = Mockito.mock(Scanner.class);
+		when(scan.nextLine()).thenReturn("1");
+		inputReaderUtil = new InputReaderUtil();
 		int result = inputReaderUtil.readSelection();
 		assertEquals(1,result);
 	}

@@ -166,7 +166,7 @@ public class FareCalculatorServiceTest {
     }
     
     @Test
-    public void calculateFareWithDiscountForRecurrentUserForAnHour() {
+    public void calculateFareCarWithDiscountForRecurrentUserForAnHour() {
     	// Arrange
     	Instant inTime = Instant.now().minusSeconds(60*60);
     	outTime = Instant.now();
@@ -181,5 +181,20 @@ public class FareCalculatorServiceTest {
         // Assert
         assertEquals(Math.round( 0.95 * Fare.CAR_RATE_PER_HOUR * 100.0)/100.0, ticket.getPrice());
     }
+    @Test
+    public void calculateFareBikeWithDiscountForRecurrentUserForAnHour() {
+    	// Arrange
+    	Instant inTime = Instant.now().minusSeconds(60*60);
+    	outTime = Instant.now();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
 
+        ticket.setParkingSpot(parkingSpot);
+        ticket.setRecurringUser(true);
+        // Act
+        fareCalculatorService.calculateFare(ticket);
+        // Assert
+        assertEquals(Math.round( 0.95 * Fare.BIKE_RATE_PER_HOUR * 100.0)/100.0, ticket.getPrice());
+    }
 }

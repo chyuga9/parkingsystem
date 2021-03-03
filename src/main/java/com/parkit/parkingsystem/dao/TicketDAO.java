@@ -29,11 +29,12 @@ public class TicketDAO {
             //ps.setInt(1,ticket.getId());
             ps.setInt(1,ticket.getParkingSpot().getId());
             ps.setString(2, ticket.getVehicleRegNumber());
-            ps.setDouble(3, ticket.getPrice());
+            // 03/03 je viens de mettre en cmmentaire le getPrice et modifier l'ordre de la requete
+            //ps.setDouble(3, ticket.getPrice());
             //ps.setDouble(4, 15);
-            ps.setTimestamp(4, Timestamp.from(ticket.getInTime()));
+            ps.setTimestamp(3, Timestamp.from(ticket.getInTime()));
             //ps.setTimestamp(5, (Timestamp.from(ticket.getOutTime()) == null)?null: (Timestamp.from(ticket.getOutTime())) );
-            ps.setNull(5, 0);
+            ps.setNull(4, 0);
             return ps.execute();
             }catch (Exception ex){
             logger.error("Error fetching next available slot",ex);

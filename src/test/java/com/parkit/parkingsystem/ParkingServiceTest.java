@@ -19,6 +19,7 @@ import java.io.PrintStream;
 import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.startsWith;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,6 +33,8 @@ public class ParkingServiceTest {
 	private static ParkingSpotDAO parkingSpotDAO;
 	@Mock
 	private static TicketDAO ticketDAO;
+	@Mock
+	private static Ticket ticket;
 
 	@BeforeEach
 	private void setUpPerTest() {
@@ -174,22 +177,43 @@ public class ParkingServiceTest {
 		parkingService.processIncomingVehicle();
 		assertThrows(IllegalArgumentException.class, () -> parkingService.getVehichleType());
 	}
-	@Disabled
+	@Test
+	public void processIncomingRecurringVehiculeTest() {
+		PrintStream out = mock(PrintStream.class);
+		System.setOut(out);
+		try{
+			when(inputReaderUtil.readSelection()).thenReturn(2);
+		
+		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+		when(parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE)).thenReturn(4);
+		when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
+		when(ticketDAO.isRecurringUser(any(Ticket.class))).thenReturn(true);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		parkingService.processIncomingVehicle();
+		verify(out).println(startsWith("Welcome back!"));
+	}
+	
+	@Disabled //failed to set up mock object
 	@Test
 	public void processIncomingWithoutAvailableParkingSpotTest() {
 		try {
 			when(inputReaderUtil.readSelection()).thenReturn(1);
+			when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(0);
+			when(parkingService.getNextParkingNumberIfAvailable()).thenThrow(Exception.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("Failed to set up test mock objects");
 		}
 		parkingService.processIncomingVehicle();
-		assertThrows(Exception.class, () -> parkingService.getNextParkingNumberIfAvailable());
+		assertThrows(Exception.class, () -> parkingService.processIncomingVehicle());
+		//assertThrows(Exception.class, () -> parkingService.getNextParkingNumberIfAvailable());
 	}
-	@Disabled
+	
 	@Test
 	public void processExitingUnknownVehiculeRegistrationNumberTest() throws Exception {
-		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ZAEFCDF");
+		//when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn(anyString());
 		when(ticketDAO.getTicket(anyString())).thenReturn(null);
 		parkingService.processExitingVehicle();
 		assertThrows(Exception.class, () -> parkingService.processExitingVehicle());

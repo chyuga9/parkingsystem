@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 public class InteractiveShell {
 
     private static final Logger logger = LogManager.getLogger("InteractiveShell");
-    //static InputReaderUtil inputReaderUtil = new InputReaderUtil();
+    static InputReaderUtil inputReaderUtil = new InputReaderUtil();
     //static ParkingSpotDAO parkingSpotDAO = new ParkingSpotDAO();
     //static TicketDAO ticketDAO = new TicketDAO();
     //static ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
@@ -20,7 +20,7 @@ public class InteractiveShell {
         System.out.println("Welcome to Parking System!");
 
         boolean continueApp = true;
-        InputReaderUtil inputReaderUtil = new InputReaderUtil();
+        //InputReaderUtil inputReaderUtil = new InputReaderUtil();
         ParkingSpotDAO parkingSpotDAO = new ParkingSpotDAO();
         TicketDAO ticketDAO = new TicketDAO();
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
