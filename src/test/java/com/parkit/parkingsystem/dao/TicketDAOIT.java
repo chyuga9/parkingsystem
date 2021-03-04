@@ -80,17 +80,17 @@ public class TicketDAOIT {
 		}
 	 
 	 @Disabled
-	 @Test // je souhaite lancer une erreur à cause d'une connexion qui n'a pas plus s'établir mais il ne prend pas en compte mon mock
+	 @Test // je souhaite lancer une erreur à cause d'une connexion qui n'a pas plus s'établir mais il ne prend pas en compte mon mock, la connexion n'est pas null...
 		public void noConnectionForTicketTest() {
 	        parkingSpotDAO.dataBaseConfig = mockDataBaseTestConfig;	
 		 try {
-			when(mockDataBaseTestConfig.getConnection()).thenReturn(null);
+			when(mockDataBaseTestConfig.getConnection()).thenThrow(SQLException.class);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-			ticketDAO.saveTicket(ticket);
+			ticketDAO.saveTicket(mockTicket);
 			assertThrows(Exception.class, () -> ticketDAO.saveTicket(ticket));
 	 }
 	 
@@ -98,13 +98,16 @@ public class TicketDAOIT {
 		public void updateTicketTest() {
 	        parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
 		 ticket = new Ticket(parkingSpot,"4321test",Instant.now().minusSeconds(60*60));
-		 	ticket.getParkingSpot().setId(1);
-			when(mockTicketDAO.saveTicket(ticket)).thenReturn(true);
+		 when(parkingSpot.getId()).thenReturn(1);	
+		 //ticket.getParkingSpot().setId(1);
+			//impossible de mocker saveTicket sinon le ticket n'est pas enregistré dans la base de données
+		 	//when(mockTicketDAO.saveTicket(ticket)).thenReturn(true);
 			ticketDAO.saveTicket(ticket);
 			//when(mockTicket.getPrice()).thenReturn(1.5);
 			//when(mockTicket.getOutTime()).thenReturn(Instant.now());
 			ticket.setOutTime(Instant.now());
 			ticket.setPrice(1.5);
+			ticket.setId(1);
 			//when(mockTicket.getId()).thenReturn(1);
 			ticketDAO.updateTicket(ticket);
 			double price = 0;
@@ -114,12 +117,9 @@ public class TicketDAOIT {
 				PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_TICKET_TEST);
 				ps.setString(1,"4321test");
 	            ResultSet rs = ps.executeQuery();
-	            if(rs.next()) {
-	            price = rs.getInt(1);
-	            } else {
-	            	System.out.println("jai rien");
-	            }
-			} catch (ClassNotFoundException e) {
+	            if(rs.next()) 
+	            price = rs.getDouble(1);
+	            } catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -127,14 +127,19 @@ public class TicketDAOIT {
 	        assertEquals(1.5,price);
 		}
 	 
-	 @Disabled
+	
 	 @Test
 		public void getTicketTest() {
-			ticket = new Ticket(parkingSpot,"4321test",1.5,Instant.now().minusSeconds(60*60),Instant.now(),false);
-			when(mockTicketDAO.saveTicket(ticket)).thenReturn(true);
-			ticketDAO.getTicket("4321test");
-			int moi = 23;
-			assertEquals("test1234",moi);
+			ticket = new Ticket(parkingSpot,"test12",Instant.now().minusSeconds(60*60));
+			Ticket ticket2 = new Ticket(parkingSpot,"test12",1.5,Instant.now().minusSeconds(60*60),Instant.now(),false);
+			 when(parkingSpot.getId()).thenReturn(1);	
+			ticketDAO.saveTicket(ticket);
+			ticket.setOutTime(Instant.now());
+			ticket.setPrice(1.5);
+			ticket.setId(1);
+			ticketDAO.updateTicket(ticket);
+			Ticket ticket3 = ticketDAO.getTicket("test12");
+			assertEquals(ticket2.getPrice(),ticket3.getPrice());
 		}
 		
 }
