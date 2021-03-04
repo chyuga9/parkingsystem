@@ -132,7 +132,7 @@ public class TicketDAOIT {
 		public void getTicketTest() {
 			ticket = new Ticket(parkingSpot,"test12",Instant.now().minusSeconds(60*60));
 			Ticket ticket2 = new Ticket(parkingSpot,"test12",1.5,Instant.now().minusSeconds(60*60),Instant.now(),false);
-			 when(parkingSpot.getId()).thenReturn(1);	
+			when(parkingSpot.getId()).thenReturn(1);	
 			ticketDAO.saveTicket(ticket);
 			ticket.setOutTime(Instant.now());
 			ticket.setPrice(1.5);
@@ -142,4 +142,18 @@ public class TicketDAOIT {
 			assertEquals(ticket2.getPrice(),ticket3.getPrice());
 		}
 		
+	 @Test
+	 public void isRecurringTest() {
+		ticket = new Ticket(parkingSpot,"test876",Instant.now().minusSeconds(60*60));
+		Ticket ticket2 = new Ticket(parkingSpot,"test876",1.5,Instant.now().minusSeconds(49*60*60),Instant.now().minusSeconds(48*60*60),false);
+		when(parkingSpot.getId()).thenReturn(1);	
+		ticketDAO.saveTicket(ticket2);
+		ticket2.setOutTime(Instant.now().minusSeconds(48*60*60));
+		ticket2.setPrice(1.5);
+		ticket2.setId(1);
+		ticketDAO.updateTicket(ticket2);
+		ticketDAO.isRecurringUser(ticket);
+		assertEquals(true,ticket.isRecurringUser());
+		
+	 }
 }
