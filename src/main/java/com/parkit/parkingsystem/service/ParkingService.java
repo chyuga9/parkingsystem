@@ -43,8 +43,7 @@ public class ParkingService {
 				parkingSpotDAO.updateParking(parkingSpot);// allot this parking space and mark it's availability as
 															// false
 				Instant inTime = Instant.now();
-				// Creer une instance avec les parametres et enlever tous les sets en bas
-				Ticket ticket = new Ticket(parkingSpot, vehicleRegNumber, Instant.now());
+				Ticket ticket = new Ticket(parkingSpot, vehicleRegNumber, inTime);
 				Connection con = null;
 				// Seeking if it's a recurring user
 				if (ticketDAO.isRecurringUser(ticket)) {
