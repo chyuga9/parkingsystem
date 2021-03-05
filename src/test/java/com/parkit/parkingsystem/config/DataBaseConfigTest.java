@@ -24,13 +24,7 @@ public class DataBaseConfigTest {
 	@Test
 	public void getConnectionTest() throws ClassNotFoundException, SQLException {
 		 testedConnection = dataBaseConfig.getConnection();
-		//Connection expectedConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/prod?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC","root","");
-		/*PrintStream out = mock(PrintStream.class);
-		System.setOut(out);
-		verify(out).println(startsWith("Connexion à la database réussie"));
-		*/
-		//assertEquals(expectedConnection.getCatalog(),testedConnection.getCatalog());
-		assertEquals("prod",testedConnection.getCatalog());
+		 assertEquals("prod",testedConnection.getCatalog());
 	}
 	@Disabled
 	@Test

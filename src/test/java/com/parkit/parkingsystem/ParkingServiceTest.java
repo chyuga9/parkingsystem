@@ -40,10 +40,6 @@ public class ParkingServiceTest {
 	@BeforeEach
 	private void setUpPerTest() {
 		try {
-			// (inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-			// when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
-			// when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
-			// when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
 			parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -196,7 +192,6 @@ public class ParkingServiceTest {
 		verify(out).println(startsWith("Welcome back!"));
 	}
 	
-	//failed to set up mock object
 	@Test
 	public void processIncomingWithoutAvailableParkingSpotTest() {
 		try {
@@ -208,15 +203,11 @@ public class ParkingServiceTest {
 		}
 		parkingService.getNextParkingNumberIfAvailable();
 		assertEquals(null,parkingService.getNextParkingNumberIfAvailable());
-		//assertThrows(Exception.class, () -> parkingService.getNextParkingNumberIfAvailable());
 	}
 	@Disabled
 	@Test
 	public void processExitingUnknownVehiculeRegistrationNumberTest() throws Exception {
-		//when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn(anyString());
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ADSFJ");
-		//when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("");
-		//when(ticketDAO.getTicket(anyString())).thenReturn(null);
 		when(ticketDAO.getTicket("ADSFJ")).thenReturn(null);
 		parkingService.processExitingVehicle();
 		assertThrows(NullPointerException.class, () -> parkingService.processExitingVehicle());

@@ -27,12 +27,12 @@ import com.parkit.parkingsystem.model.Ticket;
 
 @ExtendWith(MockitoExtension.class)
 public class TicketDAOIT {
-	
+
 	private static TicketDAO ticketDAO;
 	private static ParkingSpotDAO parkingSpotDAO = new ParkingSpotDAO();
-    private static DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
-    private static DataBasePrepareService dataBasePrepareService;
-    private static Ticket ticket;
+	private static DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
+	private static DataBasePrepareService dataBasePrepareService;
+	private static Ticket ticket;
 
 	@Mock
 	Ticket mockTicket;
@@ -42,118 +42,116 @@ public class TicketDAOIT {
 	DataBaseTestConfig mockDataBaseTestConfig;
 	@Mock
 	TicketDAO mockTicketDAO;
-	
-	 @BeforeAll
-	    private static void setUp() throws Exception{
-	        ticketDAO = new TicketDAO();
-	        ticketDAO.dataBaseConfig = dataBaseTestConfig;
-	        dataBasePrepareService = new DataBasePrepareService();
-	    }
-	 
-	 @BeforeEach
-	 public void setUpPerTest() {
-	        dataBasePrepareService.clearDataBaseEntries();
-	 }
-	 @Test
+
+	@BeforeAll
+	private static void setUp() throws Exception {
+		ticketDAO = new TicketDAO();
+		ticketDAO.dataBaseConfig = dataBaseTestConfig;
+		dataBasePrepareService = new DataBasePrepareService();
+	}
+
+	@BeforeEach
+	public void setUpPerTest() {
+		dataBasePrepareService.clearDataBaseEntries();
+	}
+
+	@Test
 	public void saveTicketTest() {
-        parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
+		parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
 		when(mockTicket.getParkingSpot()).thenReturn(parkingSpot);
 		when(mockTicket.getParkingSpot().getId()).thenReturn(1);
 		when(mockTicket.getVehicleRegNumber()).thenReturn("test1234");
 		when(mockTicket.getInTime()).thenReturn(Instant.now());
 		ticketDAO.saveTicket(mockTicket);
 		String immatriculation = null;
-    	Connection con = null;
+		Connection con = null;
 		try {
 			con = dataBaseTestConfig.getConnection();
 			PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET_TEST);
-			ps.setString(1,"test1234");
-            ResultSet rs = ps.executeQuery();
-            if(rs.next())
-            immatriculation = rs.getString(1);
+			ps.setString(1, "test1234");
+			ResultSet rs = ps.executeQuery();
+			if (rs.next())
+				immatriculation = rs.getString(1);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-        assertEquals("test1234",immatriculation);
-		}
-	 
-	 @Disabled
-	 @Test // je souhaite lancer une erreur à cause d'une connexion qui n'a pas plus s'établir mais il ne prend pas en compte mon mock, la connexion n'est pas null...
-		public void noConnectionForTicketTest() {
-	        parkingSpotDAO.dataBaseConfig = mockDataBaseTestConfig;	
-		 try {
+		assertEquals("test1234", immatriculation);
+	}
+
+	@Disabled
+	@Test // je souhaite lancer une erreur à cause d'une connexion qui n'a pas plus
+			// s'établir mais il ne prend pas en compte mon mock, la connexion n'est pas
+			// null...
+	public void noConnectionForTicketTest() {
+		parkingSpotDAO.dataBaseConfig = mockDataBaseTestConfig;
+		try {
 			when(mockDataBaseTestConfig.getConnection()).thenThrow(SQLException.class);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-			ticketDAO.saveTicket(mockTicket);
-			assertThrows(Exception.class, () -> ticketDAO.saveTicket(ticket));
-	 }
-	 
-	 @Test
-		public void updateTicketTest() {
-	        parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
-		 ticket = new Ticket(parkingSpot,"4321test",Instant.now().minusSeconds(60*60));
-		 when(parkingSpot.getId()).thenReturn(1);	
-		 //ticket.getParkingSpot().setId(1);
-			//impossible de mocker saveTicket sinon le ticket n'est pas enregistré dans la base de données
-		 	//when(mockTicketDAO.saveTicket(ticket)).thenReturn(true);
-			ticketDAO.saveTicket(ticket);
-			//when(mockTicket.getPrice()).thenReturn(1.5);
-			//when(mockTicket.getOutTime()).thenReturn(Instant.now());
-			ticket.setOutTime(Instant.now());
-			ticket.setPrice(1.5);
-			ticket.setId(1);
-			//when(mockTicket.getId()).thenReturn(1);
-			ticketDAO.updateTicket(ticket);
-			double price = 0;
-	    	Connection con = null;
-			try {
-				con = dataBaseTestConfig.getConnection();
-				PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_TICKET_TEST);
-				ps.setString(1,"4321test");
-	            ResultSet rs = ps.executeQuery();
-	            if(rs.next()) 
-	            price = rs.getDouble(1);
-	            } catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-	        assertEquals(1.5,price);
+		ticketDAO.saveTicket(mockTicket);
+		assertThrows(Exception.class, () -> ticketDAO.saveTicket(ticket));
+	}
+
+	@Test
+	public void updateTicketTest() {
+		parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
+		ticket = new Ticket(parkingSpot, "4321test", Instant.now().minusSeconds(60 * 60));
+		when(parkingSpot.getId()).thenReturn(1);
+		ticketDAO.saveTicket(ticket);
+		ticket.setOutTime(Instant.now());
+		ticket.setPrice(1.5);
+		ticket.setId(1);
+		ticketDAO.updateTicket(ticket);
+		double price = 0;
+		Connection con = null;
+		try {
+			con = dataBaseTestConfig.getConnection();
+			PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_TICKET_TEST);
+			ps.setString(1, "4321test");
+			ResultSet rs = ps.executeQuery();
+			if (rs.next())
+				price = rs.getDouble(1);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-	 
-	
-	 @Test
-		public void getTicketTest() {
-			ticket = new Ticket(parkingSpot,"test12",Instant.now().minusSeconds(60*60));
-			Ticket ticket2 = new Ticket(parkingSpot,"test12",1.5,Instant.now().minusSeconds(60*60),Instant.now(),false);
-			when(parkingSpot.getId()).thenReturn(1);	
-			ticketDAO.saveTicket(ticket);
-			ticket.setOutTime(Instant.now());
-			ticket.setPrice(1.5);
-			ticket.setId(1);
-			ticketDAO.updateTicket(ticket);
-			Ticket ticket3 = ticketDAO.getTicket("test12");
-			assertEquals(ticket2.getPrice(),ticket3.getPrice());
-		}
-		
-	 @Test
-	 public void isRecurringTest() {
-		ticket = new Ticket(parkingSpot,"test876",Instant.now().minusSeconds(60*60));
-		Ticket ticket2 = new Ticket(parkingSpot,"test876",1.5,Instant.now().minusSeconds(49*60*60),Instant.now().minusSeconds(48*60*60),false);
-		when(parkingSpot.getId()).thenReturn(1);	
+		assertEquals(1.5, price);
+	}
+
+	@Test
+	public void getTicketTest() {
+		ticket = new Ticket(parkingSpot, "test12", Instant.now().minusSeconds(60 * 60));
+		Ticket ticket2 = new Ticket(parkingSpot, "test12", 1.5, Instant.now().minusSeconds(60 * 60), Instant.now(),
+				false);
+		when(parkingSpot.getId()).thenReturn(1);
+		ticketDAO.saveTicket(ticket);
+		ticket.setOutTime(Instant.now());
+		ticket.setPrice(1.5);
+		ticket.setId(1);
+		ticketDAO.updateTicket(ticket);
+		Ticket ticket3 = ticketDAO.getTicket("test12");
+		assertEquals(ticket2.getPrice(), ticket3.getPrice());
+	}
+
+	@Test
+	public void isRecurringTest() {
+		ticket = new Ticket(parkingSpot, "test876", Instant.now().minusSeconds(60 * 60));
+		Ticket ticket2 = new Ticket(parkingSpot, "test876", 1.5, Instant.now().minusSeconds(49 * 60 * 60),
+				Instant.now().minusSeconds(48 * 60 * 60), false);
+		when(parkingSpot.getId()).thenReturn(1);
 		ticketDAO.saveTicket(ticket2);
-		ticket2.setOutTime(Instant.now().minusSeconds(48*60*60));
+		ticket2.setOutTime(Instant.now().minusSeconds(48 * 60 * 60));
 		ticket2.setPrice(1.5);
 		ticket2.setId(1);
 		ticketDAO.updateTicket(ticket2);
 		ticketDAO.isRecurringUser(ticket);
-		assertEquals(true,ticket.isRecurringUser());
-		
-	 }
+		assertEquals(true, ticket.isRecurringUser());
+
+	}
 }
