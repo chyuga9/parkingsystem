@@ -3,6 +3,8 @@ package com.parkit.parkingsystem.util;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Scanner;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -28,5 +30,15 @@ public class InputReaderUtilTest {
 		inputReaderUtil = new InputReaderUtil();
 		int result = inputReaderUtil.readSelection();
 		assertEquals(1,result);
+	}
+	@Disabled
+	@Test
+	public void shouldTakeUserInput() {
+	    InputReaderUtil inputReader= new InputReaderUtil();
+
+	    String input = "1";
+	    InputStream in = new ByteArrayInputStream(input.getBytes());
+	    System.setIn(in);
+	    Scanner scanner = new Scanner(in);
 	}
 }

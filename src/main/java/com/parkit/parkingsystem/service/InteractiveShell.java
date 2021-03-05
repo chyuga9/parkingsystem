@@ -15,7 +15,7 @@ public class InteractiveShell {
     //static ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 
 
-    public static void loadInterface(){
+    public static void loadInterface() throws Exception{
         logger.info("App initialized!!!"); 
         System.out.println("Welcome to Parking System!");
 
@@ -33,10 +33,14 @@ public class InteractiveShell {
                     parkingService.processIncomingVehicle();
                     break;
                 }
-                case 2: {
-                    parkingService.processExitingVehicle();
-                    break;
-                }
+                case 2: try {
+					{					    
+							parkingService.processExitingVehicle();
+					    break;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
                 case 3: {
                     System.out.println("Exiting from the system!");
                     continueApp = false;

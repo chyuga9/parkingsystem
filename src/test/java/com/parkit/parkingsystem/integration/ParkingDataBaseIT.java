@@ -117,9 +117,9 @@ public class ParkingDataBaseIT {
         	int numberSpotAvailable = parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE);
             assertEquals(5,numberSpotAvailable);
     }
-    //avec incoming process mock
+  //avec incoming process mock
     @Test
-    public void testParkingSpotIsAvailable(){
+    public void testParkingSpotIsAvailable() throws Exception{
     	//doNothing().when(mockParkingService).processIncomingVehicle();
     	//when(ticket.setOutTime()).thenReturn(1);
     	ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
@@ -131,9 +131,9 @@ public class ParkingDataBaseIT {
         numberSpotAvailable = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
         assertEquals(1,numberSpotAvailable);
     }
-    //sans incoming process mock
+  //sans incoming process mock
     @Test
-    public void testParkingSpotIsAvailablesans(){
+    public void testParkingSpotIsAvailablesans() throws Exception{
     	
     	//when(inputReaderUtil.readSelection()).thenReturn(1);
     	Ticket ticket = new Ticket(parkingSpot,"ABCDEF",Instant.now().minusSeconds(60*60));

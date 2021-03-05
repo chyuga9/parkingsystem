@@ -56,18 +56,15 @@ public class InteractiveShellTest {
 	*/
 	@Disabled
 	@Test
-	public void loadInterfaceAndSelect2Test() {
-		try {
-    		when(inputReaderUtil.readSelection()).thenReturn(2);
-    		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public void loadInterfaceAndSelect2Test() throws Exception {
+   		when(inputReaderUtil.readSelection()).thenReturn(2);
 		interactiveShell.loadInterface();
-		verify(parkingService, times(1)).processExitingVehicle();
+		verify(parkingService, times(1)).processExitingVehicle();	
 	}
+	
 	@Disabled
 	@Test
-	public void loadInterfaceAndSelect3Test() {
+	public void loadInterfaceAndSelect3Test() throws Exception {
 		PrintStream out = mock(PrintStream.class);
 		System.setOut(out);
 		try {
@@ -80,7 +77,7 @@ public class InteractiveShellTest {
 	}
 	@Disabled
 	@Test
-	public void loadInterfaceAndSelectAnotherNumberTest() {
+	public void loadInterfaceAndSelectAnotherNumberTest() throws Exception {
 		PrintStream out = mock(PrintStream.class);
 		System.setOut(out);
 		try {

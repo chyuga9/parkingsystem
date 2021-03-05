@@ -70,7 +70,7 @@ public class TicketDAO {
             dataBaseConfig.closeConnection(con);
             
         }catch (Exception ex){
-            logger.error("Error fetching next available slot",ex);
+            logger.error("Error getting ticket",ex);
             ex.printStackTrace();
     }
         return ticket;
