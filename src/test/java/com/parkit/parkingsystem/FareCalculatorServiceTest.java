@@ -9,6 +9,7 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
@@ -197,4 +198,26 @@ public class FareCalculatorServiceTest {
         // Assert
         assertEquals(Math.round( 0.95 * Fare.BIKE_RATE_PER_HOUR * 100.0)/100.0, ticket.getPrice());
     }
+    
+    @Test
+    public void getDurationTest() {
+    	ticket.setInTime(Instant.now().minusSeconds(60*60));
+    	ticket.setOutTime(Instant.now());
+    	double duration = fareCalculatorService.getDuration(ticket);
+    	assertEquals(1,duration);
+    }
+
+	@Test
+	public void testDuration(){
+		Ticket ticket = new Ticket(Instant.now().minusSeconds(45*60),Instant.now());
+		assertEquals(0.75,fareCalculatorService.getDuration(ticket));
+	}
+	@Test
+	public void getErrorTest() {
+		ParkingSpot parkingSpot = new ParkingSpot(1,ParkingType.TEST,true);
+		Ticket ticket = new Ticket(parkingSpot,"TestE2E",Instant.now().minusSeconds(90*60));
+		ticket.setOutTime(Instant.now());
+		assertThrows(IllegalArgumentException.class, () -> fareCalculatorService.calculateFare(ticket));
+
+	}
 }
