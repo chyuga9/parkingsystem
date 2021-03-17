@@ -31,7 +31,8 @@ public class TicketDAO {
 			return ps.execute();
 		} catch (Exception ex) {
 			logger.error("Error fetching next available slot", ex);
-		} finally {
+			throw new Exception();
+			} finally {
 			dataBaseConfig.closeConnection(con);
 			return false;
 		}
@@ -86,7 +87,7 @@ public class TicketDAO {
 		return false;
 	}
 
-	public boolean isRecurringUser(Ticket ticket) {
+	public boolean isRecurringUser(Ticket ticket) throws Exception {
 		Connection con = null;
 		try {
 			con = dataBaseConfig.getConnection();
@@ -98,6 +99,7 @@ public class TicketDAO {
 			}
 		} catch (Exception ex) {
 			logger.error("Error seeking if it's a recurring user", ex);
+			throw new Exception(ex);
 		}
 		return ticket.isRecurringUser();
 	}

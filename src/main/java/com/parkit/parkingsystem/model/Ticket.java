@@ -25,6 +25,12 @@ public class Ticket {
 		this.recurringUser = recurringUser;
 	}
 
+	public Ticket( Instant inTime, Instant outTime) {
+		super();
+		this.inTime = inTime;
+		this.outTime = outTime;
+	}
+
 	public Ticket(ParkingSpot parkingSpot, String vehicleRegNumber, Instant inTime) {
 		super();
 		this.parkingSpot = parkingSpot;

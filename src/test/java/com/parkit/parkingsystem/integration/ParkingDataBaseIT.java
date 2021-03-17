@@ -74,7 +74,7 @@ public class ParkingDataBaseIT {
 	}
 
 	@Test
-	public void testTicketIsRegistered() {
+	public void testTicketIsRegistered() throws Exception {
 		when(inputReaderUtil.readSelection()).thenReturn(1);
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processIncomingVehicle();
@@ -99,7 +99,7 @@ public class ParkingDataBaseIT {
 	}
 
 	@Test
-	public void testCarParkingSpotIsUnavailable() {
+	public void testCarParkingSpotIsUnavailable() throws Exception {
 		when(inputReaderUtil.readSelection()).thenReturn(1);
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processIncomingVehicle();
@@ -110,7 +110,7 @@ public class ParkingDataBaseIT {
 	}
 
 	@Test
-	public void testBikeParkingSpotIsUnavailable() {
+	public void testBikeParkingSpotIsUnavailable() throws Exception {
 		when(inputReaderUtil.readSelection()).thenReturn(2);
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processIncomingVehicle();
@@ -123,28 +123,16 @@ public class ParkingDataBaseIT {
 	// avec incoming process mock
 	@Test
 	public void testParkingSpotIsAvailable() throws Exception {
+		when(inputReaderUtil.readSelection()).thenReturn(1);
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		int numberSpotAvailable = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
-		System.out.println(numberSpotAvailable);
+		parkingService.processIncomingVehicle();
+		Thread.sleep(500);
+		int firstSpotAvailableAfterCarComing = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
 		parkingService.processExitingVehicle();
 		// TODO: check that the fare generated and out time are populated correctly in
 		// the database
-		numberSpotAvailable = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
-		assertEquals(1, numberSpotAvailable);
+		int firstSpotAvailableAfterCarExiting = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
+		assertEquals(2, firstSpotAvailableAfterCarComing);
+		assertEquals(1, firstSpotAvailableAfterCarExiting);
 	}
-
-	// sans incoming process mock
-	@Test
-	public void testParkingSpotIsAvailablesans() throws Exception {
-		Ticket ticket = new Ticket(parkingSpot, "ABCDEF", Instant.now().minusSeconds(60 * 60));
-		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		ticketDAO.saveTicket(ticket);
-		int numberSpotAvailable = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
-		parkingService.processExitingVehicle();
-		// TODO: check that the fare generated and out time are populated correctly in
-		// the database
-		numberSpotAvailable = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
-		assertEquals(1, numberSpotAvailable);
-	}
-
 }

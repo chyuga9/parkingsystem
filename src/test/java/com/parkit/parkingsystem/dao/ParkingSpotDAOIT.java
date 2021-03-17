@@ -1,6 +1,7 @@
 package com.parkit.parkingsystem.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.sql.Connection;
@@ -10,6 +11,7 @@ import java.sql.SQLException;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
@@ -19,7 +21,7 @@ import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
 import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
 import com.parkit.parkingsystem.model.ParkingSpot;
 
-public class ParkingSpotDAOTest {
+public class ParkingSpotDAOIT {
 
 	static ParkingSpotDAO parkingSpotDAO;
 	static DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
@@ -28,6 +30,8 @@ public class ParkingSpotDAOTest {
     
     @Mock
     ParkingSpot mockParkingSpot;
+    @Mock
+    DataBaseTestConfig mockDbc;
     
     @BeforeAll
     private static void setUp() throws Exception{
@@ -72,6 +76,5 @@ public class ParkingSpotDAOTest {
 			e.printStackTrace();
 		}
 		assertEquals(1,id);
-	
-}
+    }
 }
