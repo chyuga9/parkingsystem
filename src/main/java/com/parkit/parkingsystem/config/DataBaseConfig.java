@@ -23,7 +23,7 @@ public class DataBaseConfig {
     }
 		return con;}
 
-    public void closeConnection(Connection con){
+    public void closeConnection(Connection con) throws SQLException{
         if(con!=null){
             try {
                 con.close();
@@ -31,28 +31,31 @@ public class DataBaseConfig {
                 System.out.println("Connexion fermée");
             } catch (SQLException e) {
                 logger.error("Error while closing connection",e);
+                throw new SQLException();
             }
         }
     }
 
-    public void closePreparedStatement(PreparedStatement ps) {
+    public void closePreparedStatement(PreparedStatement ps) throws SQLException {
         if(ps!=null){
             try {
                 ps.close();
                 logger.info("Closing Prepared Statement");
             } catch (SQLException e) {
                 logger.error("Error while closing prepared statement",e);
+                throw new SQLException();
             }
         }
     }
 
-    public void closeResultSet(ResultSet rs) {
+    public void closeResultSet(ResultSet rs) throws SQLException {
         if(rs!=null){
             try {
                 rs.close();
                 logger.info("Closing Result Set");
             } catch (SQLException e) {
                 logger.error("Error while closing result set",e);
+                throw new SQLException();
             }
         }
     }
