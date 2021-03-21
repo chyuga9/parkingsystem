@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
@@ -47,20 +48,16 @@ public class ParkingSpotDAOIT {
         dataBasePrepareService.clearDataBaseEntries();
  }
     
-    @Test // FONCTIONNE
+	@DisplayName("Check what is the next available slot")
+	@Test 
 	public void getNextAvailableSlotTest() throws Exception {
 		int spotNumber = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
 		assertEquals(1,spotNumber);
 	}
     
-    @Test // FONCTIONNE
+	@DisplayName("Check that the 1st slot is unavailable")
+	@Test 
 	public void updateParkingTest() throws Exception {
-    	
-    	/* avec le mock il me dit dès la 1e instruction (ligne 54) que l'objet est null
-    	 * when(mockParkingSpot.isAvailable()).thenReturn(false);
-    	when(mockParkingSpot.getId()).thenReturn(1);
-    	when(mockParkingSpot.getParkingType()).thenReturn(ParkingType.CAR);
-    	*/
     	parkingSpot = new ParkingSpot(1,ParkingType.CAR,false);
 		parkingSpotDAO.updateParking(parkingSpot);
     	Connection con = null;
@@ -80,14 +77,17 @@ public class ParkingSpotDAOIT {
 		assertEquals(1,id);
     }
     
-    @Test // FONCTIONNE
+	@DisplayName("Throw an error by trying to get the next available spot because it's not connected")
+	@Test 
     public void getErrorOnGettingNextAvailableSpot() {
     	//Connection mockCon = mock(Connection.class);
     	DataBaseConfig mockDBC = mock(DataBaseConfig.class);
     	parkingSpotDAO.dataBaseConfig = mockDBC;
     	assertThrows(Exception.class, () -> parkingSpotDAO.getNextAvailableSlot(ParkingType.TEST));
     }
-    @Test // FONCTIONNE
+    
+	@DisplayName("Throw an error by trying to update parking availability because it's not connected")
+	@Test 
     public void getErrorOnUpdatingParking() {
     	//Connection mockCon = mock(Connection.class);
     	DataBaseConfig mockDBC = mock(DataBaseConfig.class);
