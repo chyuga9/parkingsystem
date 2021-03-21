@@ -66,7 +66,7 @@ public class TicketDAOIT {
 	}
 	
 	@DisplayName("The ticket is saved with good informations")
-	@Test // FONCTIONNE
+	@Test 
 	public void saveTicketTest() throws Exception {
 		parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
 		when(mockTicket.getParkingSpot()).thenReturn(parkingSpot);
@@ -90,15 +90,9 @@ public class TicketDAOIT {
 		}
 		assertEquals("test1234", immatriculation);
 	}
-	@Disabled
-	@Test // NE FONCTIONNE PAS
-	public void wrongRegNumberToGetTicket() throws Exception {
-		ticketDAO.getTicket("fegefgfs");
-		//verify(ticketDAO.logger).info("Error fetching next available slot");
-		//https://www.baeldung.com/junit-asserting-logs
-	}
 
-	@Test // FONCTIONNE
+	@DisplayName("The ticket is updated with good informations")
+	@Test 
 	public void updateTicketTest() throws Exception {
 		parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
 		ticket = new Ticket(parkingSpot, "4321test", Instant.now().minusSeconds(60 * 60));
@@ -125,7 +119,8 @@ public class TicketDAOIT {
 		assertEquals(1.5, price);
 	}
 
-	@Test // FONCTIONNE
+	@DisplayName("The ticket contains informations from the Database")
+	@Test 
 	public void getTicketTest() throws Exception {
 		ticket = new Ticket(parkingSpot, "test12", Instant.now().minusSeconds(60 * 60));
 		Ticket ticket2 = new Ticket(parkingSpot, "test12", 1.5, Instant.now().minusSeconds(60 * 60), Instant.now(),
@@ -140,7 +135,8 @@ public class TicketDAOIT {
 		assertEquals(ticket2.getPrice(), ticket3.getPrice());
 	}
 
-	@Test // FONCTIONNE
+	@DisplayName("Search if the user is a recurring one")
+	@Test
 	public void isRecurringTest() throws Exception {
 		ticket = new Ticket(parkingSpot, "test876", Instant.now().minusSeconds(60 * 60));
 		Ticket ticket2 = new Ticket(parkingSpot, "test876", 1.5, Instant.now().minusSeconds(49 * 60 * 60),
@@ -156,27 +152,32 @@ public class TicketDAOIT {
 
 	}
 
-	@Test // FONCTIONNE
+	@DisplayName("Throw an error by trying to save the ticket because it's not connected")
+	@Test 
 	public void errorWhenSavingTicket() throws ClassNotFoundException, SQLException {
 		DataBaseConfig mockDBC = mock(DataBaseConfig.class);
 		ticketDAO.dataBaseConfig = mockDBC;
 		assertThrows(Exception.class, () -> ticketDAO.saveTicket(ticket));
 	}
 
-	@Test // FONCTIONNE
+	@DisplayName("Throw an error by trying to get the ticket because it's not connected")
+	@Test 
 	public void errorWhenGettingTicket() throws Exception {
 		DataBaseConfig mockDBC = mock(DataBaseConfig.class);
 		ticketDAO.dataBaseConfig = mockDBC;
 		assertThrows(Exception.class, () -> ticketDAO.getTicket("dsjfiosdqjf"));
 	}
 
-	@Test // FONCTIONNE
+	@DisplayName("Throw an error by trying to update the ticket because it's not connected")
+	@Test 
 	public void errorWhenUpdatingTicket() throws Exception {
 		DataBaseConfig mockDBC = mock(DataBaseConfig.class);
 		ticketDAO.dataBaseConfig = mockDBC;
 		assertThrows(Exception.class, () -> ticketDAO.updateTicket(ticket));
 	}
-	@Test // FONCTIONNE
+	
+	@DisplayName("Throw an error by trying to check if it's a recurring user because it's not connected")
+	@Test 
 	public void errorWhenTryingToKnowIfIsRecurring() throws Exception {
 		DataBaseConfig mockDBC = mock(DataBaseConfig.class);
 		ticketDAO.dataBaseConfig = mockDBC;
