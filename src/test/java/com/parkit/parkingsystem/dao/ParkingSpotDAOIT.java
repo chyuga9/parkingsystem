@@ -2,6 +2,7 @@ package com.parkit.parkingsystem.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.sql.Connection;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
+import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
@@ -36,23 +38,23 @@ public class ParkingSpotDAOIT {
     @BeforeAll
     private static void setUp() throws Exception{
         parkingSpotDAO = new ParkingSpotDAO();
-        parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
         dataBasePrepareService = new DataBasePrepareService();
     }
  
  @BeforeEach
  public void setUpPerTest() {
+     parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
         dataBasePrepareService.clearDataBaseEntries();
  }
     
-    @Test
-	public void getNextAvailableSlotTest() {
+    @Test // FONCTIONNE
+	public void getNextAvailableSlotTest() throws Exception {
 		int spotNumber = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
 		assertEquals(1,spotNumber);
 	}
     
-    @Test
-	public void updateParkingTest() {
+    @Test // FONCTIONNE
+	public void updateParkingTest() throws Exception {
     	
     	/* avec le mock il me dit dès la 1e instruction (ligne 54) que l'objet est null
     	 * when(mockParkingSpot.isAvailable()).thenReturn(false);
@@ -77,4 +79,20 @@ public class ParkingSpotDAOIT {
 		}
 		assertEquals(1,id);
     }
+    
+    @Test // FONCTIONNE
+    public void getErrorOnGettingNextAvailableSpot() {
+    	//Connection mockCon = mock(Connection.class);
+    	DataBaseConfig mockDBC = mock(DataBaseConfig.class);
+    	parkingSpotDAO.dataBaseConfig = mockDBC;
+    	assertThrows(Exception.class, () -> parkingSpotDAO.getNextAvailableSlot(ParkingType.TEST));
+    }
+    @Test // FONCTIONNE
+    public void getErrorOnUpdatingParking() {
+    	//Connection mockCon = mock(Connection.class);
+    	DataBaseConfig mockDBC = mock(DataBaseConfig.class);
+    	parkingSpotDAO.dataBaseConfig = mockDBC;
+    	assertThrows(Exception.class, () -> parkingSpotDAO.updateParking(mockParkingSpot));
+    }
+    
 }

@@ -2,6 +2,7 @@ package com.parkit.parkingsystem.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.startsWith;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -54,17 +55,17 @@ public class TicketDAOIT {
 	@BeforeAll
 	private static void setUp() throws Exception {
 		ticketDAO = new TicketDAO();
-		ticketDAO.dataBaseConfig = dataBaseTestConfig;
 		dataBasePrepareService = new DataBasePrepareService();
 	}
 
 	@BeforeEach
 	public void setUpPerTest() {
 		dataBasePrepareService.clearDataBaseEntries();
+		ticketDAO.dataBaseConfig = dataBaseTestConfig;
 	}
 
 	@Test // FONCTIONNE
-	public void saveTicketTest() {
+	public void saveTicketTest() throws Exception {
 		parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
 		when(mockTicket.getParkingSpot()).thenReturn(parkingSpot);
 		when(mockTicket.getParkingSpot().getId()).thenReturn(1);
@@ -87,9 +88,16 @@ public class TicketDAOIT {
 		}
 		assertEquals("test1234", immatriculation);
 	}
+	@Disabled
+	@Test // NE FONCTIONNE PAS
+	public void wrongRegNumberToGetTicket() throws Exception {
+		ticketDAO.getTicket("fegefgfs");
+		//verify(ticketDAO.logger).info("Error fetching next available slot");
+		//https://www.baeldung.com/junit-asserting-logs
+	}
 
 	@Test // FONCTIONNE
-	public void updateTicketTest() {
+	public void updateTicketTest() throws Exception {
 		parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
 		ticket = new Ticket(parkingSpot, "4321test", Instant.now().minusSeconds(60 * 60));
 		when(parkingSpot.getId()).thenReturn(1);
@@ -116,7 +124,7 @@ public class TicketDAOIT {
 	}
 
 	@Test // FONCTIONNE
-	public void getTicketTest() {
+	public void getTicketTest() throws Exception {
 		ticket = new Ticket(parkingSpot, "test12", Instant.now().minusSeconds(60 * 60));
 		Ticket ticket2 = new Ticket(parkingSpot, "test12", 1.5, Instant.now().minusSeconds(60 * 60), Instant.now(),
 				false);
@@ -129,10 +137,12 @@ public class TicketDAOIT {
 		Ticket ticket3 = ticketDAO.getTicket("test12");
 		assertEquals(ticket2.getPrice(), ticket3.getPrice());
 	}
+
 	@Test // FONCTIONNE
 	public void isRecurringTest() throws Exception {
 		ticket = new Ticket(parkingSpot, "test876", Instant.now().minusSeconds(60 * 60));
-		Ticket ticket2 = new Ticket(parkingSpot, "test876", 1.5, Instant.now().minusSeconds(49 * 60 * 60),Instant.now().minusSeconds(48 * 60 * 60),false);
+		Ticket ticket2 = new Ticket(parkingSpot, "test876", 1.5, Instant.now().minusSeconds(49 * 60 * 60),
+				Instant.now().minusSeconds(48 * 60 * 60), false);
 		when(parkingSpot.getId()).thenReturn(1);
 		ticketDAO.saveTicket(ticket2);
 		ticket2.setOutTime(Instant.now().minusSeconds(48 * 60 * 60));
@@ -143,22 +153,31 @@ public class TicketDAOIT {
 		assertEquals(true, ticket.isRecurringUser());
 
 	}
-	@Disabled
-	@Test  // NE FONCTIONNE PAS
+
+	@Test // FONCTIONNE
 	public void errorWhenSavingTicket() throws ClassNotFoundException, SQLException {
-		ParkingSpot parkingSpot2 = new ParkingSpot(1,ParkingType.TEST,false);
-		//DataBaseConfig mockDBC = mock(DataBaseConfig.class);
-		//when(mockDBC.getConnection()).thenReturn(null);
-		//ticket = new Ticket(parkingSpot2, "test234", null);
-		//ticket = new Ticket(parkingSpot2, "test234", Instant.now().minusSeconds(60 * 60));
-		assertThrows(Exception.class,() -> ticketDAO.saveTicket(ticket));
+		DataBaseConfig mockDBC = mock(DataBaseConfig.class);
+		ticketDAO.dataBaseConfig = mockDBC;
+		assertThrows(Exception.class, () -> ticketDAO.saveTicket(ticket));
 	}
-	@Disabled
-	@Test // NE FONCTIONNE PAS
-	public void errorWhenGettingTicket() {
-		PrintStream out = mock(PrintStream.class);
-		System.setOut(out);
-		ticketDAO.getTicket("fdlskfml");
-		verify(out).println(Mockito.contains("The vehicule with the number "));
+
+	@Test // FONCTIONNE
+	public void errorWhenGettingTicket() throws Exception {
+		DataBaseConfig mockDBC = mock(DataBaseConfig.class);
+		ticketDAO.dataBaseConfig = mockDBC;
+		assertThrows(Exception.class, () -> ticketDAO.getTicket("dsjfiosdqjf"));
+	}
+
+	@Test // FONCTIONNE
+	public void errorWhenUpdatingTicket() throws Exception {
+		DataBaseConfig mockDBC = mock(DataBaseConfig.class);
+		ticketDAO.dataBaseConfig = mockDBC;
+		assertThrows(Exception.class, () -> ticketDAO.updateTicket(ticket));
+	}
+	@Test // FONCTIONNE
+	public void errorWhenTryingToKnowIfIsRecurring() throws Exception {
+		DataBaseConfig mockDBC = mock(DataBaseConfig.class);
+		ticketDAO.dataBaseConfig = mockDBC;
+		assertThrows(Exception.class, () -> ticketDAO.isRecurringUser(mockTicket));
 	}
 }

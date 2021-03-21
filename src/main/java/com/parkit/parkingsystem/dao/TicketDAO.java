@@ -14,12 +14,12 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 
 public class TicketDAO {
-
-	private static final Logger logger = LogManager.getLogger("TicketDAO");
+	// change visibility (before was private) for the test
+	static final Logger logger = LogManager.getLogger("TicketDAO");
 
 	public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
-	public boolean saveTicket(Ticket ticket) {
+	public boolean saveTicket(Ticket ticket) throws Exception {
 		Connection con = null;
 		try {
 			con = dataBaseConfig.getConnection();
@@ -31,14 +31,13 @@ public class TicketDAO {
 			return ps.execute();
 		} catch (Exception ex) {
 			logger.error("Error fetching next available slot", ex);
-			throw new Exception();
+			throw new Exception(ex);
 			} finally {
 			dataBaseConfig.closeConnection(con);
-			return false;
 		}
 	}
 
-	public Ticket getTicket(String vehicleRegNumber) {
+	public Ticket getTicket(String vehicleRegNumber) throws Exception {
 		Connection con = null;
 		Ticket ticket = null;
 		try {
@@ -64,12 +63,12 @@ public class TicketDAO {
 
 		} catch (Exception ex) {
 			logger.error("Error getting ticket", ex);
-			ex.printStackTrace();
+			throw new Exception(ex);
 		}
 		return ticket;
 	}
 
-	public boolean updateTicket(Ticket ticket) {
+	public boolean updateTicket(Ticket ticket) throws Exception {
 		Connection con = null;
 		try {
 			con = dataBaseConfig.getConnection();
@@ -81,10 +80,11 @@ public class TicketDAO {
 			return true;
 		} catch (Exception ex) {
 			logger.error("Error saving ticket info", ex);
+			throw new Exception(ex);
+
 		} finally {
 			dataBaseConfig.closeConnection(con);
 		}
-		return false;
 	}
 
 	public boolean isRecurringUser(Ticket ticket) throws Exception {
