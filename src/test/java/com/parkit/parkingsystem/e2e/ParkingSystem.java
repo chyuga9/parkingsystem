@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -68,6 +69,7 @@ public class ParkingSystem {
 		interactiveShell = new InteractiveShell();
 	}
 
+	@DisplayName("The user parks his car less than 30 minutes and leaves for free")
 	@Test // les mocks ne sont pas pris en compte avec loadInterface()
 	public void userWantsToParkHisCarAndLeaveBeforeThirtyMinutes() throws Exception {
 		when(inputReaderUtil.readSelection()).thenReturn(1);
@@ -81,6 +83,7 @@ public class ParkingSystem {
 		assertEquals(0, price);
 	}
 
+	@DisplayName("The user parks his bike less than 30 minutes and leaves for free")
 	@Test
 	public void userWantsToParkHisBikeAndLeaveBeforeThirtyMinutes() throws Exception {
 		when(inputReaderUtil.readSelection()).thenReturn(2);
@@ -93,33 +96,28 @@ public class ParkingSystem {
 		double price = ticketDAO.getTicket("TestE2E").getPrice();
 		assertEquals(0, price);
 	}
+	
+	@DisplayName("The user parks his car 90 minutes and pays 2.25€ when leaving")
 	@Test
 	public void userWantsToParkHisCarAndLeaveAfterThirtyMinutes() throws Exception {
-		//when(inputReaderUtil.readSelection()).thenReturn(1);
 		parkingSpot = new ParkingSpot(1,ParkingType.CAR,true);
 		ticket = new Ticket(parkingSpot,"TestE2E",Instant.now().minusSeconds(90*60));
-		//System.out.println(ticket.getInTime());
 		ticketDAO.saveTicket(ticket);
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("TestE2E");
-		//Comment mettre le temps du ticket à Plus de 30 minutes
 		ParkingService parkingService1 = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		//parkingService1.processIncomingVehicle();
 		parkingService1.processExitingVehicle();
 		double price = ticketDAO.getTicket("TestE2E").getPrice();
 		assertEquals(2.25, price,0.05);
 	}
+	
+	@DisplayName("The user parks his bike 90 minutes and pays 1.5€ when leaving")
 	@Test
 	public void userWantsToParkHisBikeAndLeaveAfterThirtyMinutes() throws Exception {
-		//when(inputReaderUtil.readSelection()).thenReturn(2);
 		parkingSpot = new ParkingSpot(4,ParkingType.BIKE,true);
 		ticket = new Ticket(parkingSpot,"TestE2E",Instant.now().minusSeconds(90*60));
-		//System.out.println(ticket.getInTime());
 		ticketDAO.saveTicket(ticket);
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("TestE2E");
-		//interactiveShell.loadInterface();
-		//Comment mettre le temps du ticket à Plus de 30 minutes
 		ParkingService parkingService1 = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		//parkingService1.processIncomingVehicle();
 		parkingService1.processExitingVehicle();
 		double price = ticketDAO.getTicket("TestE2E").getPrice();
 		assertEquals(1.5, price,0.05);

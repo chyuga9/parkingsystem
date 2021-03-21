@@ -13,6 +13,7 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -65,21 +66,13 @@ public class ParkingDataBaseIT {
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 		dataBasePrepareService.clearDataBaseEntries();
 	}
-
-	@AfterAll
-	private static void tearDown() {
-		// qu'est ce que teardown ? = Nommage spécifique pour les anciennes versions de
-		// Junit
-		// pensez à fermer les connexions
-	}
-
+	
+	@DisplayName("The ticket is saved in DB")
 	@Test
 	public void testTicketIsRegistered() throws Exception {
 		when(inputReaderUtil.readSelection()).thenReturn(1);
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processIncomingVehicle();
-		// TODO: check that a ticket is actualy saved in DB and Parking table is updated
-		// with availability
 		String immatriculation = null;
 		Connection con = null;
 		try {
@@ -97,30 +90,27 @@ public class ParkingDataBaseIT {
 		assertEquals("ABCDEF", immatriculation);
 
 	}
-
+	@DisplayName("The parking table is updated after a car getting in")
 	@Test
 	public void testCarParkingSpotIsUnavailable() throws Exception {
 		when(inputReaderUtil.readSelection()).thenReturn(1);
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processIncomingVehicle();
-		// TODO: check that a ticket is actualy saved in DB and Parking table is updated
-		// with availability
 		int numberSpotAvailable = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
 		assertEquals(2, numberSpotAvailable);
 	}
 
+	@DisplayName("The parking table is updated after a bike getting in")
 	@Test
 	public void testBikeParkingSpotIsUnavailable() throws Exception {
 		when(inputReaderUtil.readSelection()).thenReturn(2);
 		ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
 		parkingService.processIncomingVehicle();
-		// TODO: check that a ticket is actualy saved in DB and Parking table is updated
-		// with availability
 		int numberSpotAvailable = parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE);
 		assertEquals(5, numberSpotAvailable);
 	}
 
-	// avec incoming process mock
+	@DisplayName("The parking table is updated a vehicle leaving")
 	@Test
 	public void testParkingSpotIsAvailable() throws Exception {
 		when(inputReaderUtil.readSelection()).thenReturn(1);
@@ -129,8 +119,6 @@ public class ParkingDataBaseIT {
 		Thread.sleep(500);
 		int firstSpotAvailableAfterCarComing = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
 		parkingService.processExitingVehicle();
-		// TODO: check that the fare generated and out time are populated correctly in
-		// the database
 		int firstSpotAvailableAfterCarExiting = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
 		assertEquals(2, firstSpotAvailableAfterCarComing);
 		assertEquals(1, firstSpotAvailableAfterCarExiting);
