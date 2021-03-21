@@ -11,6 +11,7 @@ import com.parkit.parkingsystem.util.UserInput;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -53,7 +54,8 @@ public class ParkingServiceTest {
 		}
 	}
 
-	@Test // FONCTIONNE
+	@DisplayName("A vehicle can exit correctly")
+	@Test
 	public void processExitingVehicleTest() throws Exception {
 		try {
 			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
@@ -72,42 +74,9 @@ public class ParkingServiceTest {
 		verify(ticketDAO, Mockito.times(1)).updateTicket(any(Ticket.class));
 	}
 
-	@Test // FONCTIONNE
-	public void processExitingVehicleTest2() throws Exception {
-		try {
-			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-			ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
-			Ticket ticket = new Ticket(parkingSpot, "ABCDEF", Instant.now().minusSeconds(60 * 60));
-			when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
-			when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException("Failed to set up test mock objects");
-
-		}
-		parkingService.processExitingVehicle();
-		verify(ticketDAO, Mockito.times(1)).getTicket(anyString());
-	}
-
-	@Test // FONCTIONNE
-	public void processExitingVehicleTest3() throws Exception {
-		try {
-			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-			ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
-			Ticket ticket = new Ticket(parkingSpot, "ABCDEF", Instant.now().minusSeconds(60 * 60));
-			when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
-			when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException("Failed to set up test mock objects");
-
-		}
-		parkingService.processExitingVehicle();
-		verify(ticketDAO, Mockito.times(1)).updateTicket(any(Ticket.class));
-	}
-
-	@Test // FONCTIONNE
-	public void processIncomingCarTest() {
+	@DisplayName("A car enters the parking and the methods getNextAvailableSlot, updateParking and saveTicket are launched")
+	@Test 
+	public void processIncomingCarTest() throws Exception {
 		try {
 			when(inputReaderUtil.readSelection()).thenReturn(1);
 			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
@@ -120,44 +89,13 @@ public class ParkingServiceTest {
 
 		}
 		verify(parkingSpotDAO, Mockito.times(1)).getNextAvailableSlot(ParkingType.CAR);
-
-	}
-
-	@Test // FONCTIONNE
-	public void processIncomingCarTest2() {
-		try {
-			when(inputReaderUtil.readSelection()).thenReturn(1);
-			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-			when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(1);
-			when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
-			parkingService.processIncomingVehicle();
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException("Failed to set up test mock objects");
-
-		}
 		verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
-		
-	}
-
-	@Test // FONCTIONNE
-	public void processIncomingCarTest3() {
-		try {
-			when(inputReaderUtil.readSelection()).thenReturn(1);
-			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-			when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(1);
-			when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
-			parkingService.processIncomingVehicle();
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException("Failed to set up test mock objects");
-
-		}
 		verify(ticketDAO, Mockito.times(1)).saveTicket(any(Ticket.class));
 	}
 
-	@Test // FONCTIONNE
-	public void processIncomingBikeTest() {
+	@DisplayName("A bike enters the parking and the methods getNextAvailableSlot, updateParking and saveTicket are launched")
+	@Test
+	public void processIncomingBikeTest() throws Exception {
 		try {
 			when(inputReaderUtil.readSelection()).thenReturn(2);
 			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
@@ -174,19 +112,20 @@ public class ParkingServiceTest {
 		verify(ticketDAO, Mockito.times(1)).saveTicket(any(Ticket.class));
 	}
 
-	@Test  // FONCTIONNE
+	@DisplayName("Throw an exception when the input for vehicle isn't good")
+	@Test 
 	public void getErrorOnProcessIncomingUnknownTypeVehiculeTest() {		 
 		when(inputReaderUtil.readSelection()).thenReturn(341);
 		assertThrows(IllegalArgumentException.class, ()-> parkingService.getVehicleType());
 	}
 
-	@Test // FONCTIONNE
+	@DisplayName("When it's a recurring user, a personnalized message is displayed")
+	@Test
 	public void processIncomingRecurringVehiculeTest() {
 		PrintStream out = mock(PrintStream.class);
 		System.setOut(out);
 		try{
-			when(inputReaderUtil.readSelection()).thenReturn(2);
-		
+		when(inputReaderUtil.readSelection()).thenReturn(2);
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 		when(parkingSpotDAO.getNextAvailableSlot(ParkingType.BIKE)).thenReturn(4);
 		when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
@@ -197,7 +136,9 @@ public class ParkingServiceTest {
 		}
 		verify(out).println(startsWith("Welcome back!"));
 	}
-	@Test // FONCTIONNE
+	
+	@DisplayName("A error message is displayed when the Vehicle Registration number isn't right")
+	@Test 
 	public void getErrorOnExit() throws Exception {
 		PrintStream out = mock(PrintStream.class);
 		System.setOut(out);
@@ -209,7 +150,9 @@ public class ParkingServiceTest {
 		parkingService.processExitingVehicle();
 		verify(out).println(startsWith("Unable to update ticket "));
 	}
-	@Test // FONCTIONNE
+	
+	@DisplayName("Throw an exception when no parking slot is available")
+	@Test 
 	public void getErrorOnNextSlotAvailable() throws Exception {
 		PrintStream out = mock(PrintStream.class);
 		System.setOut(out);

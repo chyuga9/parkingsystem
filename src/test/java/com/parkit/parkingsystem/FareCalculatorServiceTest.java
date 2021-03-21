@@ -10,6 +10,7 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
@@ -37,7 +38,7 @@ public class FareCalculatorServiceTest {
         
     }
 
-
+    @DisplayName("The price is 1.5€ for a car parked 1 hour")
     @Test
     public void calculateFareCar(){
         // Arrange
@@ -57,6 +58,7 @@ public class FareCalculatorServiceTest {
         assertEquals(Fare.CAR_RATE_PER_HOUR,ticket.getPrice());
     }
 
+    @DisplayName("The price is 1€ for a bike parked 1 hour")
     @Test
     public void calculateFareBike(){
     	// Arrange
@@ -75,6 +77,7 @@ public class FareCalculatorServiceTest {
         assertEquals(Fare.BIKE_RATE_PER_HOUR,ticket.getPrice());
     }
 
+    @DisplayName("Throw an error when the vehicle type isn't recognized")
     @Test
     public void calculateFareUnkownType(){
     	// Arrange
@@ -90,6 +93,7 @@ public class FareCalculatorServiceTest {
         assertThrows(NullPointerException.class, () -> fareCalculatorService.calculateFare(ticket));
     }
 
+    @DisplayName("Throw an error when the 'out time' is before the 'in time'")
     @Test
     public void calculateFareBikeWithFutureInTime(){
         // Arrange
@@ -105,6 +109,7 @@ public class FareCalculatorServiceTest {
         assertThrows(IllegalArgumentException.class, () -> fareCalculatorService.calculateFare(ticket));
     }
 
+    @DisplayName("The price is 1.5€ for a car parked 1 hour")
     @Test
     public void calculateFareBikeWithLessThanOneHourParkingTime(){
         // Arrange
@@ -120,6 +125,7 @@ public class FareCalculatorServiceTest {
         assertEquals(Math.round(0.75 * Fare.BIKE_RATE_PER_HOUR*100)/100.0, ticket.getPrice());
     }
 
+    @DisplayName("The price is 1.125€ for a car parked 45 minutes")
     @Test
     public void calculateFareCarWithLessThanOneHourParkingTime(){
     	// Arrange
@@ -135,8 +141,9 @@ public class FareCalculatorServiceTest {
         assertEquals(Math.round(0.75 * Fare.CAR_RATE_PER_HOUR*100)/100.0, ticket.getPrice());
     }
 
+    @DisplayName("The price is 36€ for a car parked 1 day")
     @Test
-    public void calculateFareCarWithMoreThanADayParkingTime(){
+    public void calculateFareCarWithADayParkingTime(){
     	// Arrange
     	Instant inTime = Instant.now().minusSeconds(24*60*60);
     	outTime = Instant.now();
@@ -150,6 +157,8 @@ public class FareCalculatorServiceTest {
         // Assert
         assertEquals(Math.round(24 * Fare.CAR_RATE_PER_HOUR*100)/100.0, ticket.getPrice());
     }
+    
+    @DisplayName("The parking is free for a vehicle that parks less than 30 minutes")
     @Test
     public void calculateFareCarWithLessThanHalfHour() {
     	//Arrange
@@ -166,6 +175,7 @@ public class FareCalculatorServiceTest {
         assertEquals((0 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
     }
     
+    @DisplayName("The price is 1.425€ for a recurrent car parked 1 hour")
     @Test
     public void calculateFareCarWithDiscountForRecurrentUserForAnHour() {
     	// Arrange
@@ -182,6 +192,8 @@ public class FareCalculatorServiceTest {
         // Assert
         assertEquals(Math.round( 0.95 * Fare.CAR_RATE_PER_HOUR * 100.0)/100.0, ticket.getPrice());
     }
+    
+    @DisplayName("The price is .95€ for a recurrent bike parked 1 hour")
     @Test
     public void calculateFareBikeWithDiscountForRecurrentUserForAnHour() {
     	// Arrange
@@ -199,6 +211,7 @@ public class FareCalculatorServiceTest {
         assertEquals(Math.round( 0.95 * Fare.BIKE_RATE_PER_HOUR * 100.0)/100.0, ticket.getPrice());
     }
     
+    @DisplayName("Get the duration between 'out time' and 'in time'")
     @Test
     public void getDurationTest() {
     	ticket.setInTime(Instant.now().minusSeconds(60*60));
@@ -206,13 +219,9 @@ public class FareCalculatorServiceTest {
     	double duration = fareCalculatorService.getDuration(ticket);
     	assertEquals(1,duration);
     }
-
-	@Test
-	public void testDuration(){
-		Ticket ticket = new Ticket(Instant.now().minusSeconds(45*60),Instant.now());
-		assertEquals(0.75,fareCalculatorService.getDuration(ticket));
-	}
-	@Test
+    
+    @DisplayName("Throw an exception when the ticket has a problem")
+    @Test
 	public void getErrorTest() {
 		ParkingSpot parkingSpot = new ParkingSpot(1,ParkingType.TEST,true);
 		Ticket ticket = new Ticket(parkingSpot,"TestE2E",Instant.now().minusSeconds(90*60));
