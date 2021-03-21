@@ -20,6 +20,7 @@ import java.time.Instant;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -63,7 +64,8 @@ public class TicketDAOIT {
 		dataBasePrepareService.clearDataBaseEntries();
 		ticketDAO.dataBaseConfig = dataBaseTestConfig;
 	}
-
+	
+	@DisplayName("The ticket is saved with good informations")
 	@Test // FONCTIONNE
 	public void saveTicketTest() throws Exception {
 		parkingSpotDAO.dataBaseConfig = dataBaseTestConfig;
