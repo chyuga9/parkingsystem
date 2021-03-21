@@ -45,19 +45,17 @@ public class InteractiveShellTest {
 	@Mock
 	TicketDAO ticketDAO;
 	
-	/* je dois trouver un moyen de faire readSelection malgré le fait qu'un inputReaderUtil est instancié dans la méthode originale
+	//je dois trouver un moyen de faire readSelection malgré le fait qu'un inputReaderUtil est instancié dans la méthode originale
+	@Disabled
 	@Test
-	public void loadInterfaceAndSelect1Test() {// faire la meme chose pour tous les cas, as besoin d'assert
-		try {
-			//parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-			when(inputReaderUtil.readSelection()).thenReturn(1);
-    		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public void loadInterfaceAndSelect1Test() throws Exception {
+		// faire la meme chose pour tous les cas, as besoin d'assert
+		//PowerMockito.mockStatic(InputReaderUtil.class);
+		when(inputReaderUtil.readSelection()).thenReturn(1);
 		interactiveShell.loadInterface();
 		verify(parkingService, times(1)).processIncomingVehicle();
 	}
-	*/
+	
 	@Disabled
 	@Test
 	public void loadInterfaceAndSelect2Test() throws Exception {
