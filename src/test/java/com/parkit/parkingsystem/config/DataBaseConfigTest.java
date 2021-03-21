@@ -26,11 +26,4 @@ public class DataBaseConfigTest {
 		 testedConnection = dataBaseConfig.getConnection();
 		 assertEquals("prod",testedConnection.getCatalog());
 	}
-	@Disabled
-	@Test
-	public void closeConnectionTest() throws SQLException, ClassNotFoundException {
-		testedConnection = dataBaseConfig.getConnection();
-		dataBaseConfig.closeConnection(testedConnection);
-		assertEquals("prfd",testedConnection.getCatalog());
-	}
 }
