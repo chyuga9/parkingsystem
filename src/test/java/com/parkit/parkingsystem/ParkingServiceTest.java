@@ -10,7 +10,6 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 import com.parkit.parkingsystem.util.UserInput;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.PrintStream;
 import java.time.Instant;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.startsWith;
 import static org.mockito.Mockito.*;
