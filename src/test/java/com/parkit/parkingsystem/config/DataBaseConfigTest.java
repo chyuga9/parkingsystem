@@ -11,6 +11,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
@@ -21,6 +22,7 @@ public class DataBaseConfigTest {
 	@Mock
 	Connection mockCon;
 	
+	@DisplayName("Check that the connection with the Database")
 	@Test
 	public void getConnectionTest() throws ClassNotFoundException, SQLException {
 		 testedConnection = dataBaseConfig.getConnection();
