@@ -39,7 +39,7 @@ public class FareCalculatorServiceTest {
 
     @DisplayName("The price is 1.5€ for a car parked 1 hour")
     @Test
-    public void calculateFareCar(){
+    public void calculateFareCarForOneHour(){
         // Arrange
     	
     	Instant inTime = Instant.now().minusSeconds(60*60) ;
@@ -59,7 +59,7 @@ public class FareCalculatorServiceTest {
 
     @DisplayName("The price is 1€ for a bike parked 1 hour")
     @Test
-    public void calculateFareBike(){
+    public void calculateFareBikeForOneHour(){
     	// Arrange
         Instant inTime = Instant.now().minusSeconds(60*60) ;
         outTime = Instant.now();
@@ -78,7 +78,7 @@ public class FareCalculatorServiceTest {
 
     @DisplayName("Throw an error when the vehicle type isn't recognized")
     @Test
-    public void calculateFareUnkownType(){
+    public void getErrorWhenUnrecognizedTypeVehicle(){
     	// Arrange
         Instant inTime = Instant.now().minusSeconds(60*60) ;
         outTime = Instant.now();
@@ -94,7 +94,7 @@ public class FareCalculatorServiceTest {
 
     @DisplayName("Throw an error when the 'out time' is before the 'in time'")
     @Test
-    public void calculateFareBikeWithFutureInTime(){
+    public void calculateFareBikeWithInTimeAfterThanOutTime(){
         // Arrange
     	Instant inTime = Instant.now().plusSeconds(60*60) ;
     	outTime = Instant.now();
@@ -108,7 +108,7 @@ public class FareCalculatorServiceTest {
         assertThrows(IllegalArgumentException.class, () -> fareCalculatorService.calculateFare(ticket));
     }
 
-    @DisplayName("The price is 1.5€ for a car parked 1 hour")
+    @DisplayName("The price is 0.75€ for a bike parked 1 hour")
     @Test
     public void calculateFareBikeWithLessThanOneHourParkingTime(){
         // Arrange
@@ -221,7 +221,7 @@ public class FareCalculatorServiceTest {
     
     @DisplayName("Throw an exception when the ticket has a problem")
     @Test
-	public void getErrorTest() {
+	public void getErrorWhenTicketNotGood() {
 		ParkingSpot parkingSpot = new ParkingSpot(1,ParkingType.TEST,true);
 		Ticket ticket = new Ticket(parkingSpot,"TestE2E",Instant.now().minusSeconds(90*60));
 		ticket.setOutTime(Instant.now());
