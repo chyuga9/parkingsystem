@@ -179,7 +179,12 @@
 				<goals>
 					<goal>report</goal>
 				</goals>
-				<configuration>
+				  <configuration>
+        <includes>
+            <include>**/*.*</include>
+        </includes>
+    </configuration>
+    <!-- <configuration>
 					<excludes>
 						<exclude>**/*IT.java</exclude>
 					</excludes>
@@ -200,7 +205,7 @@
 							</includes>
 						</configuration>
 					</execution>
-				</executions>
+				</executions> -->
 				 <!-- <version>2.21.0</version> 3.0.0-M5 -->
 				<!-- <dependencies>
 					<dependency>
