@@ -75,22 +75,5 @@ public class ParkingSpotDAOIT {
 		assertEquals(1,id);
     }
     
-	@DisplayName("Throw an error by trying to get the next available spot because it's not connected")
-	@Test 
-    public void getErrorOnGettingNextAvailableSpot() {
-    	//Connection mockCon = mock(Connection.class);
-    	DataBaseConfig mockDBC = mock(DataBaseConfig.class);
-    	parkingSpotDAO.dataBaseConfig = mockDBC;
-    	assertThrows(Exception.class, () -> parkingSpotDAO.getNextAvailableSlot(ParkingType.TEST));
-    }
-    
-	@DisplayName("Throw an error by trying to update parking availability because it's not connected")
-	@Test 
-    public void getErrorOnUpdatingParking() {
-    	//Connection mockCon = mock(Connection.class);
-    	DataBaseConfig mockDBC = mock(DataBaseConfig.class);
-    	parkingSpotDAO.dataBaseConfig = mockDBC;
-    	assertThrows(Exception.class, () -> parkingSpotDAO.updateParking(mockParkingSpot));
-    }
     
 }

@@ -143,35 +143,4 @@ public class TicketDAOIT {
 
 	}
 
-	@DisplayName("Throw an error by trying to save the ticket because it's not connected")
-	@Test 
-	public void errorWhenSavingTicket() throws ClassNotFoundException, SQLException {
-		DataBaseConfig mockDBC = mock(DataBaseConfig.class);
-		ticketDAO.dataBaseConfig = mockDBC;
-		assertThrows(Exception.class, () -> ticketDAO.saveTicket(ticket));
-	}
-
-	@DisplayName("Throw an error by trying to get the ticket because it's not connected")
-	@Test 
-	public void errorWhenGettingTicket() throws Exception {
-		DataBaseConfig mockDBC = mock(DataBaseConfig.class);
-		ticketDAO.dataBaseConfig = mockDBC;
-		assertThrows(Exception.class, () -> ticketDAO.getTicket("dsjfiosdqjf"));
-	}
-
-	@DisplayName("Throw an error by trying to update the ticket because it's not connected")
-	@Test 
-	public void errorWhenUpdatingTicket() throws Exception {
-		DataBaseConfig mockDBC = mock(DataBaseConfig.class);
-		ticketDAO.dataBaseConfig = mockDBC;
-		assertThrows(Exception.class, () -> ticketDAO.updateTicket(ticket));
-	}
-	
-	@DisplayName("Throw an error by trying to check if it's a recurring user because it's not connected")
-	@Test 
-	public void errorWhenTryingToKnowIfIsRecurring() throws Exception {
-		DataBaseConfig mockDBC = mock(DataBaseConfig.class);
-		ticketDAO.dataBaseConfig = mockDBC;
-		assertThrows(Exception.class, () -> ticketDAO.isRecurringUser(mockTicket));
-	}
 }
