@@ -124,7 +124,7 @@ public class FareCalculatorServiceTest {
         assertEquals(Math.round(0.75 * Fare.BIKE_RATE_PER_HOUR*100)/100.0, ticket.getPrice());
     }
 
-    @DisplayName("The price is 1.125€ for a car parked 45 minutes")
+    @DisplayName("The price is 1.13€ for a car parked 45 minutes")
     @Test
     public void calculateFareCarWithLessThanOneHourParkingTime(){
     	// Arrange
@@ -174,7 +174,7 @@ public class FareCalculatorServiceTest {
         assertEquals((0 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
     }
     
-    @DisplayName("The price is 1.425€ for a recurrent car parked 1 hour")
+    @DisplayName("The price is 1.42€ for a recurrent car parked 1 hour")
     @Test
     public void calculateFareCarWithDiscountForRecurrentUserForAnHour() {
     	// Arrange
