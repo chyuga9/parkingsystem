@@ -7,7 +7,6 @@ import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
-import com.parkit.parkingsystem.util.UserInput;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,8 +28,6 @@ public class ParkingServiceTest {
 
 	private static ParkingService parkingService;
 	
-	@Mock
-	private static UserInput userInput;
 	@Mock
 	private static InputReaderUtil inputReaderUtil;
 	@Mock

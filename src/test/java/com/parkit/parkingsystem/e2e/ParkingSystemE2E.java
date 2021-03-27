@@ -23,7 +23,6 @@ import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.InteractiveShell;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
-import com.parkit.parkingsystem.util.UserInput;
 
 @ExtendWith(MockitoExtension.class)
 public class ParkingSystemE2E {
@@ -45,8 +44,6 @@ public class ParkingSystemE2E {
 	public static ParkingSpot mockParkingSpot;
 	@Mock
 	public static TicketDAO mockTicketDAO;
-	@Mock
-	public static UserInput userInput;
 
 	@BeforeAll
 	private static void setUp() {

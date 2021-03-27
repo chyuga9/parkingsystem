@@ -18,16 +18,12 @@ import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.service.InteractiveShell;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
-import com.parkit.parkingsystem.util.UserInput;
 
 @ExtendWith(MockitoExtension.class)
 public class InteractiveShellTest {
 
 	private static InteractiveShell interactiveShell = new InteractiveShell();
 
-	@Mock
-	UserInput userInput;
-	
 	@Mock
 	InputReaderUtil inputReaderUtil;
 
