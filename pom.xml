@@ -63,29 +63,15 @@
 			<artifactId>bcel</artifactId>
 			<version>6.5.0</version>
 		</dependency>
-		<dependency>
-			<groupId>com.github.spotbugs</groupId>
-			<artifactId>spotbugs</artifactId>
-			<version>4.2.2</version>
-		</dependency>
+
+
 	</dependencies>
 
+	
 	<!-- Profils -->
 	<!-- =============================================================== -->
 	<profiles>
-		<!-- Profil pour l'environnement de test -->
-		<profile>
-			<id>test</id>
-			<build>
-				<resources>
-					<resource>
-						<directory>src/main/resources/conf-test</directory>
-						<filtering>true</filtering>
-					</resource>
-				</resources>
-			</build>
-		</profile>
-		<!-- Profil pour l'environnement de production -->
+			<!-- Profil pour l'environnement de production -->
 		<profile>
 			<id>prod</id>
 			<build>
@@ -96,6 +82,9 @@
 					</resource>
 				</resources>
 			</build>
+			<properties>
+				<exclude.tests>**/*Test.java,**/*E2E.java,**/*IT.java</exclude.tests>
+			</properties>
 		</profile>
 	</profiles>
 	<build>
@@ -126,8 +115,10 @@
 					<includes>
 						<include>**/*.*</include>
 					</includes>
+					<excludes>
+     <exclude>${exclude.tests}</exclude>
+    </excludes>
 				</configuration>
-
 			</plugin>
 
 
@@ -238,7 +229,13 @@
 				<groupId>com.github.spotbugs</groupId>
 				<artifactId>spotbugs-maven-plugin</artifactId>
 				<version>4.2.0</version>
-
+				<dependencies>
+					<dependency>
+						<groupId>com.github.spotbugs</groupId>
+						<artifactId>spotbugs</artifactId>
+						<version>4.2.2</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 
 
