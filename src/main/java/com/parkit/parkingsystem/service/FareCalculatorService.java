@@ -1,7 +1,5 @@
 package com.parkit.parkingsystem.service;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
@@ -9,8 +7,6 @@ import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.model.Ticket;
 
 public class FareCalculatorService {
-
-	public static NumberFormat df = new DecimalFormat("#.##");
 
 	public void calculateFare(Ticket ticket) {
 		double duration = getDuration(ticket);
