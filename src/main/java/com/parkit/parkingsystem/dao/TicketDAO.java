@@ -28,6 +28,7 @@ public class TicketDAO {
 			ps.setString(2, ticket.getVehicleRegNumber());
 			ps.setTimestamp(3, Timestamp.from(ticket.getInTime()));
 			ps.setNull(4, 0);
+			ps.setBoolean(5, ticket.isRecurringUser());
 			return ps.execute();
 		} catch (Exception ex) {
 			logger.error("Error fetching next available slot", ex);
@@ -47,12 +48,13 @@ public class TicketDAO {
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				ticket = new Ticket();
-				ParkingSpot parkingSpot = new ParkingSpot(rs.getInt(1), ParkingType.valueOf(rs.getString(6)), false);
+				ParkingSpot parkingSpot = new ParkingSpot(rs.getInt(1), ParkingType.valueOf(rs.getString(7)), false);
 				ticket.setParkingSpot(parkingSpot);
 				ticket.setId(rs.getInt(2));
 				ticket.setVehicleRegNumber(vehicleRegNumber);
 				ticket.setPrice(rs.getDouble(3));
 				ticket.setInTime(rs.getTimestamp(4).toInstant());
+				ticket.setRecurringUser(rs.getBoolean(6));
 			} else {
 				logger.error(
 						"The vehicule with the number indicated wasn't found. Please check your vehicule number and try again.");
