@@ -3,6 +3,9 @@ package com.parkit.parkingsystem.e2e;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 import java.time.Instant;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -13,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
@@ -62,12 +66,11 @@ public class ParkingSystemE2E {
 	}
 
 	@DisplayName("The user parks his car less than 30 minutes and leaves for free")
-	@Test // les mocks ne sont pas pris en compte avec loadInterface()
-	public void userWantsToParkHisCarAndLeaveBeforeThirtyMinutes() throws Exception {
+	@Test 
+	public void userParksHisCarAndLeavesBeforeThirtyMinutes() throws Exception {
 		when(inputReaderUtil.readSelection()).thenReturn(1);
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("TestE2E");
 		ParkingService parkingService1 = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		//interactiveShell.loadInterface();
 		parkingService1.processIncomingVehicle();
 		Thread.sleep(1000);
 		parkingService1.processExitingVehicle();
@@ -77,11 +80,10 @@ public class ParkingSystemE2E {
 
 	@DisplayName("The user parks his bike less than 30 minutes and leaves for free")
 	@Test
-	public void userWantsToParkHisBikeAndLeaveBeforeThirtyMinutes() throws Exception {
+	public void userParkskHisBikeAndLeavesBeforeThirtyMinutes() throws Exception {
 		when(inputReaderUtil.readSelection()).thenReturn(2);
 		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("TestE2E");
 		ParkingService parkingService1 = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-		//interactiveShell.loadInterface();
 		parkingService1.processIncomingVehicle();
 		Thread.sleep(1000);
 		parkingService1.processExitingVehicle();
@@ -91,7 +93,7 @@ public class ParkingSystemE2E {
 	
 	@DisplayName("The user parks his car 90 minutes and pays 2.25€ when leaving")
 	@Test
-	public void userWantsToParkHisCarAndLeaveAfterThirtyMinutes() throws Exception {
+	public void userParksHisCarAndLeavesAfterNinetyMinutes() throws Exception {
 		parkingSpot = new ParkingSpot(1,ParkingType.CAR,true);
 		ticket = new Ticket(parkingSpot,"TestE2E",Instant.now().minusSeconds(90*60));
 		ticketDAO.saveTicket(ticket);
@@ -104,7 +106,7 @@ public class ParkingSystemE2E {
 	
 	@DisplayName("The user parks his bike 90 minutes and pays 1.5€ when leaving")
 	@Test
-	public void userWantsToParkHisBikeAndLeaveAfterThirtyMinutes() throws Exception {
+	public void userParksHisBikeAndLeavesAfterNinetyMinutes() throws Exception {
 		parkingSpot = new ParkingSpot(4,ParkingType.BIKE,true);
 		ticket = new Ticket(parkingSpot,"TestE2E",Instant.now().minusSeconds(90*60));
 		ticketDAO.saveTicket(ticket);
@@ -113,5 +115,77 @@ public class ParkingSystemE2E {
 		parkingService1.processExitingVehicle();
 		double price = ticketDAO.getTicket("TestE2E").getPrice();
 		assertEquals(1.5, price,0.05);
+	}
+	
+	@DisplayName("The recurrent user parks his car 90 minutes and pays 2.13€ when leaving")
+	@Test
+	public void recurringUserParksHisCarAndLeavesAfterNinetyMinutes() throws Exception {
+		parkingSpot = new ParkingSpot(1,ParkingType.CAR,true);
+		// Creating ticket and saving it in the database in order to be found when checking if user is recurrent
+		Ticket ticket2 = new Ticket(parkingSpot, "TestE2E", Instant.now().minusSeconds(49 * 60 * 60));
+		ticketDAO.saveTicket(ticket2);
+		ticket2 = ticketDAO.getTicket("TestE2E");
+		ticket2.setOutTime(Instant.now().minusSeconds(48 * 60 * 60));
+		ticket2.setPrice(1);
+		ticketDAO.updateTicket(ticket2);
+		// The recurrent user is incoming
+		when(inputReaderUtil.readSelection()).thenReturn(1);
+		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("TestE2E");
+		ParkingService parkingService1 = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+		parkingService1.processIncomingVehicle();
+		ticket = ticketDAO.getTicket("TestE2E");
+		// Changing in_time variable in database with minus 90 minutes
+		Connection con = null;
+		try {
+			con = dataBaseTestConfig.getConnection();
+			PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_IN_TIME_TICKET_TEST);
+			ps.setTimestamp(1, Timestamp.from(Instant.now().minusSeconds(90 * 60)));
+			ps.setInt(2, ticket.getId());
+			ps.execute();
+		} catch (Exception ex) {
+			throw new Exception(ex);
+		} finally {
+			dataBaseTestConfig.closeConnection(con);
+		}		
+		parkingService1.processExitingVehicle();
+		double price = ticketDAO.getTicket("TestE2E").getPrice();
+		System.out.println(price);
+		assertEquals(2.13, price,0.05);
+	}
+
+	@DisplayName("The recurrent user parks his bike 90 minutes and pays 1.42€ when leaving")
+	@Test
+	public void recurringUserParksHisBikeAndLeavesAfterNinetyMinutes() throws Exception {
+		parkingSpot = new ParkingSpot(4,ParkingType.BIKE,true);
+		// Creating ticket and saving it in the database i order to be found when checking if user is recurrent
+		Ticket ticket2 = new Ticket(parkingSpot, "TestE2E", Instant.now().minusSeconds(49 * 60 * 60));
+		ticketDAO.saveTicket(ticket2);
+		ticket2 = ticketDAO.getTicket("TestE2E");
+		ticket2.setOutTime(Instant.now().minusSeconds(48 * 60 * 60));
+		ticket2.setPrice(1);
+		ticketDAO.updateTicket(ticket2);
+		// The recurrent user is incoming
+		when(inputReaderUtil.readSelection()).thenReturn(2);
+		when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("TestE2E");
+		ParkingService parkingService1 = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+		parkingService1.processIncomingVehicle();
+		ticket = ticketDAO.getTicket("TestE2E");
+		// Changing in_time variable in database with minus 90 minutes
+		Connection con = null;
+		try {
+			con = dataBaseTestConfig.getConnection();
+			PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_IN_TIME_TICKET_TEST);
+			ps.setTimestamp(1, Timestamp.from(Instant.now().minusSeconds(90 * 60)));
+			ps.setInt(2, ticket.getId());
+			ps.execute();
+		} catch (Exception ex) {
+			throw new Exception(ex);
+		} finally {
+			dataBaseTestConfig.closeConnection(con);
+		}		
+		parkingService1.processExitingVehicle();
+		double price = ticketDAO.getTicket("TestE2E").getPrice();
+		System.out.println(price);
+		assertEquals(1.42, price,0.05);
 	}
 }
